@@ -394,6 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const note = document.querySelector('.grid-note');
     if (note) note.remove();
   }
+
   
   if (typeFilter) typeFilter.addEventListener('change', removeGridNote);
   if (locationFilter) locationFilter.addEventListener('change', removeGridNote);
