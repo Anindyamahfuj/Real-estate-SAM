@@ -1,4 +1,3 @@
-/* realestate-style.css - Premium Luxury CSS for SAM Properties */
 * {
   margin: 0;
   padding: 0;
@@ -455,77 +454,110 @@ body {
   line-height: 1.6;
 }
 
-/* ===== TESTIMONIAL SECTION ===== */
-.testimonial-section {
-  padding: 100px 0;
-  background: #0a0a0a;
+/* ===== SERVICES PAGE ADDITIONAL STYLES ===== */
+.services-category {
+  padding: 80px 0;
 }
 
-.testimonial-slider {
-  max-width: 800px;
-  margin: 0 auto;
-  position: relative;
+.alt-bg {
+  background: #0d0d0d;
 }
 
-.testimonial-card {
-  background: #111111;
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  border-radius: 32px;
-  padding: 48px;
+.category-header {
   text-align: center;
+  margin-bottom: 50px;
 }
 
-.testimonial-card i {
-  font-size: 2.5rem;
+.category-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
   color: #D4AF37;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
-.testimonial-card p {
-  font-size: 1.2rem;
+.category-header h2 i {
+  margin-right: 12px;
+}
+
+.category-header p {
+  color: #aaa;
+}
+
+.services-grid-detailed {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 35px;
+}
+
+.service-detailed-card {
+  background: #111;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 28px;
+  padding: 35px;
+  transition: all 0.3s ease;
+}
+
+.service-detailed-card:hover {
+  transform: translateY(-8px);
+  border-color: #D4AF37;
+  box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+}
+
+.service-icon-large i {
+  font-size: 3rem;
+  color: #D4AF37;
+  margin-bottom: 20px;
+}
+
+.service-detailed-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.service-detailed-card p {
+  color: #bbb;
   line-height: 1.6;
-  margin-bottom: 24px;
-  color: #ddd;
+  margin-bottom: 20px;
 }
 
-.testimonial-card h4 {
-  color: #D4AF37;
-  margin-bottom: 8px;
+.service-detailed-card ul {
+  list-style: none;
+  padding: 0;
 }
 
-.stars {
-  color: #D4AF37;
-  letter-spacing: 3px;
-}
-
-.testimonial-dots {
+.service-detailed-card ul li {
+  padding: 8px 0;
+  color: #aaa;
   display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 30px;
+  align-items: center;
+  gap: 10px;
 }
 
-/* ===== CTA SECTION ===== */
-.cta-section {
-  padding: 100px 0;
+.service-detailed-card ul li i {
+  color: #D4AF37;
+}
+
+.services-cta {
+  padding: 80px 0;
   background: linear-gradient(135deg, #D4AF37, #B8942E);
   text-align: center;
 }
 
-.cta-content h2 {
+.cta-content-simple h2 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: #0a0a0a;
   margin-bottom: 16px;
 }
 
-.cta-content p {
+.cta-content-simple p {
   color: #0a0a0a;
   margin-bottom: 32px;
   opacity: 0.9;
 }
 
-/* ===== PROPERTIES PAGE ===== */
+/* ===== PROPERTIES PAGE FILTERS ===== */
 .page-header {
   background: linear-gradient(135deg, #0d0d0d, #080808);
   text-align: center;
@@ -551,6 +583,18 @@ body {
   justify-content: center;
 }
 
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 0.8rem;
+  color: #D4AF37;
+  letter-spacing: 1px;
+}
+
 .filter-group select,
 .filter-group input {
   padding: 12px 20px;
@@ -560,10 +604,40 @@ body {
   color: white;
   font-family: inherit;
   cursor: pointer;
+  min-width: 160px;
 }
 
 .filter-group input {
-  width: 250px;
+  min-width: 200px;
+}
+
+.filter-reset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.btn-reset {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 10px 24px;
+  border-radius: 40px;
+  color: #D4AF37;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-reset:hover {
+  background: #D4AF37;
+  color: #0a0a0a;
+}
+
+.results-count {
+  color: #D4AF37;
+  font-size: 0.9rem;
 }
 
 .properties-grid-section {
@@ -655,21 +729,6 @@ body {
   transform: scale(1.05);
 }
 
-.gallery-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0,0,0,0.8));
-  padding: 20px;
-  transform: translateY(100%);
-  transition: 0.3s;
-}
-
-.gallery-item:hover .gallery-overlay {
-  transform: translateY(0);
-}
-
 .lightbox {
   display: none;
   position: fixed;
@@ -748,6 +807,12 @@ body {
   padding: 40px;
 }
 
+.contact-form-wrapper h3 {
+  font-size: 1.5rem;
+  margin-bottom: 24px;
+  color: white;
+}
+
 .form-row {
   display: flex;
   gap: 20px;
@@ -757,7 +822,8 @@ body {
 
 .form-row input,
 .form-row select,
-.contact-form-wrapper textarea {
+.contact-form-wrapper textarea,
+.contact-form-wrapper select {
   flex: 1;
   padding: 14px 18px;
   background: #1a1a1a;
@@ -872,11 +938,6 @@ footer {
   background: #c4a02e;
 }
 
-.news-note {
-  font-size: 0.7rem;
-  margin-top: 8px;
-}
-
 .footer-bottom {
   text-align: center;
   padding-top: 30px;
@@ -885,6 +946,7 @@ footer {
   font-size: 0.8rem;
 }
 
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .container { padding: 0 24px; }
   .nav-container { flex-direction: column; }
@@ -892,4 +954,6 @@ footer {
   .hero-content { margin: 0 5%; }
   .property-grid { grid-template-columns: 1fr; }
   .contact-wrapper { grid-template-columns: 1fr; }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-group select, .filter-group input { width: 100%; }
 }
