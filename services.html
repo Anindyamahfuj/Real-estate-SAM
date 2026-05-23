@@ -1,11 +1,10 @@
-<!-- re-services.html - Services Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAM Properties | Our Services</title>
-  <link rel="stylesheet" href="realestate-style.css">
+  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
@@ -16,13 +15,13 @@
       <div class="logo">SAM<span>Properties</span></div>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="re-properties.html">Properties</a></li>
-        <li><a href="re-services.html" class="active">Services</a></li>
-        <li><a href="re-gallery.html">Gallery</a></li>
-        <li><a href="re-contact.html">Contact</a></li>
+        <li><a href="properties.html">Properties</a></li>
+        <li><a href="services.html" class="active">Services</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <a href="re-contact.html" class="btn-luxury"><i class="fas fa-phone-alt"></i> Inquire Now</a>
+        <a href="contact.html" class="btn-luxury"><i class="fas fa-phone-alt"></i> Inquire Now</a>
       </div>
     </div>
   </nav>
@@ -34,69 +33,135 @@
     </div>
   </section>
 
-  <section class="services-detailed">
+  <section class="services-category">
     <div class="container">
-      <div class="services-grid-detailed">
-        <div class="service-detailed-card" data-aos="fade-right">
-          <div class="service-icon-large"><i class="fas fa-building"></i></div>
-          <h3>Property Development</h3>
-          <p>End-to-end development of luxury residential and commercial projects with world-class architecture and premium finishes.</p>
+      <div class="category-header" data-aos="fade-up">
+        <h2><i class="fas fa-building"></i> Development & Construction</h2>
+        <p>End-to-end development of luxury residential and commercial projects</p>
+      </div>
+      <div class="services-grid-detailed" data-aos="fade-up">
+        <div class="service-detailed-card">
+          <div class="service-icon-large"><i class="fas fa-home"></i></div>
+          <h3>Luxury Apartments</h3>
+          <p>Premium apartments with world-class finishes, smart home features, and breathtaking views.</p>
           <ul>
-            <li><i class="fas fa-check-circle"></i> Luxury Apartments</li>
-            <li><i class="fas fa-check-circle"></i> Gated Communities</li>
+            <li><i class="fas fa-check-circle"></i> Smart Home Technology</li>
+            <li><i class="fas fa-check-circle"></i> Premium Italian Marble</li>
+            <li><i class="fas fa-check-circle"></i> Central AC & Heating</li>
+          </ul>
+        </div>
+        <div class="service-detailed-card">
+          <div class="service-icon-large"><i class="fas fa-tree"></i></div>
+          <h3>Gated Communities</h3>
+          <p>Secure, family-friendly communities with lush landscapes and world-class amenities.</p>
+          <ul>
+            <li><i class="fas fa-check-circle"></i> 24/7 Security</li>
+            <li><i class="fas fa-check-circle"></i> Community Clubhouse</li>
+            <li><i class="fas fa-check-circle"></i> Parks & Playgrounds</li>
+          </ul>
+        </div>
+        <div class="service-detailed-card">
+          <div class="service-icon-large"><i class="fas fa-store"></i></div>
+          <h3>Commercial Spaces</h3>
+          <p>Prime commercial properties for businesses seeking prestige locations.</p>
+          <ul>
+            <li><i class="fas fa-check-circle"></i> Corporate Offices</li>
+            <li><i class="fas fa-check-circle"></i> Retail Spaces</li>
             <li><i class="fas fa-check-circle"></i> Mixed-Use Developments</li>
           </ul>
         </div>
-        <div class="service-detailed-card" data-aos="fade-up">
-          <div class="service-icon-large"><i class="fas fa-chart-line"></i></div>
-          <h3>Investment Advisory</h3>
-          <p>Strategic investment guidance to maximize returns in Bangladesh's growing real estate market.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-category alt-bg">
+    <div class="container">
+      <div class="category-header" data-aos="fade-up">
+        <h2><i class="fas fa-chart-line"></i> Investment & Advisory</h2>
+        <p>Strategic guidance to maximize returns in Bangladesh's real estate market</p>
+      </div>
+      <div class="services-grid-detailed" data-aos="fade-up">
+        <div class="service-detailed-card">
+          <div class="service-icon-large"><i class="fas fa-chart-simple"></i></div>
+          <h3>ROI Analysis</h3>
+          <p>Detailed return on investment calculations for potential property purchases.</p>
           <ul>
-            <li><i class="fas fa-check-circle"></i> ROI Analysis</li>
-            <li><i class="fas fa-check-circle"></i> Market Research</li>
-            <li><i class="fas fa-check-circle"></i> Portfolio Management</li>
+            <li><i class="fas fa-check-circle"></i> Market Comparables</li>
+            <li><i class="fas fa-check-circle"></i> Rental Yield Analysis</li>
+            <li><i class="fas fa-check-circle"></i> Appreciation Forecast</li>
           </ul>
         </div>
-        <div class="service-detailed-card" data-aos="fade-left">
-          <div class="service-icon-large"><i class="fas fa-hand-holding-usd"></i></div>
-          <h3>Sales & Marketing</h3>
-          <p>Strategic marketing and sales solutions for premium properties targeting high-net-worth individuals.</p>
+        <div class="service-detailed-card">
+          <div class="service-icon-large"><i class="fas fa-chart-pie"></i></div>
+          <h3>Portfolio Management</h3>
+          <p>Comprehensive management of your real estate investment portfolio.</p>
           <ul>
-            <li><i class="fas fa-check-circle"></i> Luxury Property Marketing</li>
-            <li><i class="fas fa-check-circle"></i> International Outreach</li>
-            <li><i class="fas fa-check-circle"></i> Private Showings</li>
+            <li><i class="fas fa-check-circle"></i> Diversification Strategy</li>
+            <li><i class="fas fa-check-circle"></i> Risk Assessment</li>
+            <li><i class="fas fa-check-circle"></i> Performance Tracking</li>
           </ul>
         </div>
-        <div class="service-detailed-card" data-aos="fade-right">
+        <div class="service-detailed-card">
+          <div class="service-icon-large"><i class="fas fa-file-signature"></i></div>
+          <h3>Market Research</h3>
+          <p>In-depth market analysis to identify the best investment opportunities.</p>
+          <ul>
+            <li><i class="fas fa-check-circle"></i> Emerging Areas</li>
+            <li><i class="fas fa-check-circle"></i> Price Trends</li>
+            <li><i class="fas fa-check-circle"></i> Competition Analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-category">
+    <div class="container">
+      <div class="category-header" data-aos="fade-up">
+        <h2><i class="fas fa-handshake"></i> Property Services</h2>
+        <p>Complete property solutions for owners and investors</p>
+      </div>
+      <div class="services-grid-detailed" data-aos="fade-up">
+        <div class="service-detailed-card">
           <div class="service-icon-large"><i class="fas fa-home"></i></div>
           <h3>Property Management</h3>
-          <p>Complete management services for property owners including maintenance, tenant relations, and financial reporting.</p>
+          <p>Full-service management including maintenance, tenant relations, and financial reporting.</p>
           <ul>
             <li><i class="fas fa-check-circle"></i> 24/7 Maintenance</li>
-            <li><i class="fas fa-check-circle"></i> Tenant Management</li>
-            <li><i class="fas fa-check-circle"></i> Financial Reporting</li>
+            <li><i class="fas fa-check-circle"></i> Tenant Screening</li>
+            <li><i class="fas fa-check-circle"></i> Rent Collection</li>
           </ul>
         </div>
-        <div class="service-detailed-card" data-aos="fade-up">
+        <div class="service-detailed-card">
           <div class="service-icon-large"><i class="fas fa-gavel"></i></div>
           <h3>Legal Advisory</h3>
-          <p>Expert legal guidance for property transactions, documentation, and regulatory compliance.</p>
+          <p>Expert legal guidance for property transactions and regulatory compliance.</p>
           <ul>
             <li><i class="fas fa-check-circle"></i> Title Verification</li>
             <li><i class="fas fa-check-circle"></i> Contract Drafting</li>
-            <li><i class="fas fa-check-circle"></i> Regulatory Compliance</li>
+            <li><i class="fas fa-check-circle"></i> Mutation Assistance</li>
           </ul>
         </div>
-        <div class="service-detailed-card" data-aos="fade-left">
+        <div class="service-detailed-card">
           <div class="service-icon-large"><i class="fas fa-paint-roller"></i></div>
           <h3>Interior Design</h3>
-          <p>Premium interior design services to create bespoke living spaces that reflect your personal style.</p>
+          <p>Bespoke interior design services to create your dream living space.</p>
           <ul>
             <li><i class="fas fa-check-circle"></i> Custom Design</li>
             <li><i class="fas fa-check-circle"></i> Luxury Furnishings</li>
             <li><i class="fas fa-check-circle"></i> Project Management</li>
           </ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-cta">
+    <div class="container">
+      <div class="cta-content-simple" data-aos="zoom-in">
+        <h2>Need Personalized Service?</h2>
+        <p>Our experts are ready to assist you with tailored solutions</p>
+        <a href="contact.html" class="btn-primary-large">Schedule Consultation →</a>
       </div>
     </div>
   </section>
@@ -115,10 +180,10 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <a href="index.html">Home</a>
-        <a href="re-properties.html">Properties</a>
-        <a href="re-services.html">Services</a>
-        <a href="re-gallery.html">Gallery</a>
-        <a href="re-contact.html">Contact</a>
+        <a href="properties.html">Properties</a>
+        <a href="services.html">Services</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
       </div>
       <div class="footer-col">
         <h4>Contact Info</h4>
@@ -130,6 +195,6 @@
     <div class="footer-bottom">© 2025 SAM Properties — Luxury Real Estate. All Rights Reserved.</div>
   </footer>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="realestate-script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
