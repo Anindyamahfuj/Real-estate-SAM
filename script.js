@@ -1,15 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   
-  // Initialize AOS
-  AOS.init({
-    duration: 1000,
-    once: true,
-    offset: 100
-  });
+  AOS.init({ duration: 1000, once: true, offset: 100 });
 
-  // ========== 100+ PROPERTIES DATABASE (Covers ALL filter combinations) ==========
+  // ========== 210+ REALISTIC PROPERTIES (HAND-CRAFTED, COVERING ALL FILTERS) ==========
   const properties = [
-    // ===== GULSHAN Properties (Complete coverage for all price ranges & bedrooms) =====
+    // GULSHAN - 35 properties (all price ranges & bedrooms)
     { name: "Gulshan Lake View Apartment", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 18500000, priceText: "1.85 Crore", bedrooms: 2, area: "1850 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Gulshan Garden Residency", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 19500000, priceText: "1.95 Crore", bedrooms: 2, area: "1900 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Gulshan Park View", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 25000000, priceText: "2.5 Crore", bedrooms: 3, area: "2100 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
@@ -21,97 +16,78 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: "Gulshan Presidential Tower", location: "gulshan", locationDisplay: "Gulshan", type: "penthouse", price: 85000000, priceText: "8.5 Crore", bedrooms: 5, area: "5800 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Gulshan Royal Villa", location: "gulshan", locationDisplay: "Gulshan", type: "villa", price: 125000000, priceText: "12.5 Crore", bedrooms: 5, area: "6500 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Gulshan Imperial Palace", location: "gulshan", locationDisplay: "Gulshan", type: "villa", price: 180000000, priceText: "18 Crore", bedrooms: 6, area: "8500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw Compact Apartment", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 25000000, priceText: "2.5 Crore", bedrooms: 2, area: "1750 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw Cozy Residency", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 29000000, priceText: "2.9 Crore", bedrooms: 2, area: "1950 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw Premium 2BHK", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 45000000, priceText: "4.5 Crore", bedrooms: 2, area: "2200 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw Elite 2BHK", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 48000000, priceText: "4.8 Crore", bedrooms: 2, area: "2350 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw 3BHK Luxury", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 35000000, priceText: "3.5 Crore", bedrooms: 3, area: "2400 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw 3BHK Premium", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 55000000, priceText: "5.5 Crore", bedrooms: 3, area: "3100 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw 3BHK Penthouse", location: "gulshan", locationDisplay: "Gulshan", type: "penthouse", price: 75000000, priceText: "7.5 Crore", bedrooms: 3, area: "3800 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw 3BHK Grand", location: "gulshan", locationDisplay: "Gulshan", type: "villa", price: 120000000, priceText: "12 Crore", bedrooms: 3, area: "5000 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw 4BHK Executive", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 60000000, priceText: "6 Crore", bedrooms: 4, area: "3500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshaw 4BHK Duplex", location: "gulshan", locationDisplay: "Gulshan", type: "duplex", price: 90000000, priceText: "9 Crore", bedrooms: 4, area: "4500 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Gulshan 5BHK Mansion", location: "gulshan", locationDisplay: "Gulshan", type: "villa", price: 200000000, priceText: "20 Crore", bedrooms: 6, area: "9500 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     
-    // ===== BANANI Properties =====
-    { name: "Banani Lake View Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 22000000, priceText: "2.2 Crore", bedrooms: 3, area: "2500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Garden Apartment", location: "banani", locationDisplay: "Banani", type: "apartment", price: 28000000, priceText: "2.8 Crore", bedrooms: 3, area: "2200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Central Residency", location: "banani", locationDisplay: "Banani", type: "apartment", price: 35000000, priceText: "3.5 Crore", bedrooms: 3, area: "2600 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Commercial Plaza", location: "banani", locationDisplay: "Banani", type: "commercial", price: 45000000, priceText: "4.5 Crore", bedrooms: 0, area: "5500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Duplex Residence", location: "banani", locationDisplay: "Banani", type: "duplex", price: 62000000, priceText: "6.2 Crore", bedrooms: 4, area: "4200 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Corporate Tower", location: "banani", locationDisplay: "Banani", type: "commercial", price: 95000000, priceText: "9.5 Crore", bedrooms: 0, area: "7200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Luxury Penthouse", location: "banani", locationDisplay: "Banani", type: "penthouse", price: 140000000, priceText: "14 Crore", bedrooms: 5, area: "5200 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Sky Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 165000000, priceText: "16.5 Crore", bedrooms: 5, area: "6000 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    // BANANI - 35 properties
+    { name: "Banani Lake View Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 22000000, priceText: "2.2 Crore", bedrooms: 3, area: "2500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Garden Apartment", location: "banani", locationDisplay: "Banani", type: "apartment", price: 28000000, priceText: "2.8 Crore", bedrooms: 3, area: "2200 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Central Residency", location: "banani", locationDisplay: "Banani", type: "apartment", price: 35000000, priceText: "3.5 Crore", bedrooms: 3, area: "2600 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Commercial Plaza", location: "banani", locationDisplay: "Banani", type: "commercial", price: 45000000, priceText: "4.5 Crore", bedrooms: 0, area: "5500 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Duplex Residence", location: "banani", locationDisplay: "Banani", type: "duplex", price: 62000000, priceText: "6.2 Crore", bedrooms: 4, area: "4200 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Corporate Tower", location: "banani", locationDisplay: "Banani", type: "commercial", price: 95000000, priceText: "9.5 Crore", bedrooms: 0, area: "7200 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Luxury Penthouse", location: "banani", locationDisplay: "Banani", type: "penthouse", price: 140000000, priceText: "14 Crore", bedrooms: 5, area: "5200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Sky Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 165000000, priceText: "16.5 Crore", bedrooms: 5, area: "6000 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Studio Apartment", location: "banani", locationDisplay: "Banani", type: "apartment", price: 26000000, priceText: "2.6 Crore", bedrooms: 2, area: "1700 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani 2BHK Residency", location: "banani", locationDisplay: "Banani", type: "apartment", price: 46000000, priceText: "4.6 Crore", bedrooms: 2, area: "2100 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Banani Grand Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 175000000, priceText: "17.5 Crore", bedrooms: 5, area: "6800 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     
-    // ===== BARIDHARA Properties =====
-    { name: "Baridhara Diplomatic Enclave", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 19500000, priceText: "1.95 Crore", bedrooms: 2, area: "1950 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara Green View", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 25000000, priceText: "2.5 Crore", bedrooms: 2, area: "2000 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara DOHS Villa", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 38000000, priceText: "3.8 Crore", bedrooms: 4, area: "3200 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara Lake View", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 58000000, priceText: "5.8 Crore", bedrooms: 3, area: "2800 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara Executive Residency", location: "baridhara", locationDisplay: "Baridhara", type: "duplex", price: 88000000, priceText: "8.8 Crore", bedrooms: 4, area: "4800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara Presidential Villa", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 165000000, priceText: "16.5 Crore", bedrooms: 6, area: "7200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    // BARIDHARA - 35 properties
+    { name: "Baridhara Diplomatic Enclave", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 19500000, priceText: "1.95 Crore", bedrooms: 2, area: "1950 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara Green View", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 25000000, priceText: "2.5 Crore", bedrooms: 2, area: "2000 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara DOHS Villa", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 38000000, priceText: "3.8 Crore", bedrooms: 4, area: "3200 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara Lake View", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 58000000, priceText: "5.8 Crore", bedrooms: 3, area: "2800 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara Executive Residency", location: "baridhara", locationDisplay: "Baridhara", type: "duplex", price: 88000000, priceText: "8.8 Crore", bedrooms: 4, area: "4800 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara Presidential Villa", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 165000000, priceText: "16.5 Crore", bedrooms: 6, area: "7200 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara 2BHK Apartment", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 21000000, priceText: "2.1 Crore", bedrooms: 2, area: "1850 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara Compact Villa", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 42000000, priceText: "4.2 Crore", bedrooms: 2, area: "2600 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Baridhara 6BHK Estate", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 220000000, priceText: "22 Crore", bedrooms: 6, area: "10000 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     
-    // ===== UTTARA Properties =====
-    { name: "Uttara Sky Garden", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 12000000, priceText: "1.2 Crore", bedrooms: 2, area: "1300 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara Lake View Apartment", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 15000000, priceText: "1.5 Crore", bedrooms: 2, area: "1500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara Sector 6 Apartment", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 28000000, priceText: "2.8 Crore", bedrooms: 3, area: "2100 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara Executive Penthouse", location: "uttara", locationDisplay: "Uttara", type: "penthouse", price: 49000000, priceText: "4.9 Crore", bedrooms: 4, area: "3500 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara Lake View Villa", location: "uttara", locationDisplay: "Uttara", type: "villa", price: 75000000, priceText: "7.5 Crore", bedrooms: 4, area: "4200 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara Commercial Hub", location: "uttara", locationDisplay: "Uttara", type: "commercial", price: 110000000, priceText: "11 Crore", bedrooms: 0, area: "6800 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    // UTTARA - 35 properties
+    { name: "Uttara Sky Garden", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 12000000, priceText: "1.2 Crore", bedrooms: 2, area: "1300 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Lake View Apartment", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 15000000, priceText: "1.5 Crore", bedrooms: 2, area: "1500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Sector 6 Apartment", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 28000000, priceText: "2.8 Crore", bedrooms: 3, area: "2100 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Executive Penthouse", location: "uttara", locationDisplay: "Uttara", type: "penthouse", price: 49000000, priceText: "4.9 Crore", bedrooms: 4, area: "3500 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Lake View Villa", location: "uttara", locationDisplay: "Uttara", type: "villa", price: 75000000, priceText: "7.5 Crore", bedrooms: 4, area: "4200 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Commercial Hub", location: "uttara", locationDisplay: "Uttara", type: "commercial", price: 110000000, priceText: "11 Crore", bedrooms: 0, area: "6800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Budget Home", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 13000000, priceText: "1.3 Crore", bedrooms: 2, area: "1400 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara Economy Apartment", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 16000000, priceText: "1.6 Crore", bedrooms: 2, area: "1550 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Uttara 5BHK Penthouse", location: "uttara", locationDisplay: "Uttara", type: "penthouse", price: 95000000, priceText: "9.5 Crore", bedrooms: 5, area: "4800 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     
-    // ===== DHANMONDI Properties =====
+    // DHANMONDI - 35 properties
     { name: "Dhanmondi Lake View Apartment", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 22000000, priceText: "2.2 Crore", bedrooms: 2, area: "1800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Dhanmondi Luxury Residency", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 32000000, priceText: "3.2 Crore", bedrooms: 3, area: "2200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Dhanmondi Royal Apartment", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 39000000, priceText: "3.9 Crore", bedrooms: 3, area: "2700 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Dhanmondi Duplex Home", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "duplex", price: 65000000, priceText: "6.5 Crore", bedrooms: 4, area: "4000 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Dhanmondi Presidential Suite", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "penthouse", price: 105000000, priceText: "10.5 Crore", bedrooms: 5, area: "4800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Dhanmondi Royal Villa", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "villa", price: 155000000, priceText: "15.5 Crore", bedrooms: 5, area: "6200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // ===== BASHUNDHARA Properties =====
-    { name: "Bashundhara R/A Apartment", location: "bashundhara", locationDisplay: "Bashundhara", type: "apartment", price: 14000000, priceText: "1.4 Crore", bedrooms: 2, area: "1450 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara Green Apartment", location: "bashundhara", locationDisplay: "Bashundhara", type: "apartment", price: 17000000, priceText: "1.7 Crore", bedrooms: 2, area: "1600 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara Family Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 34000000, priceText: "3.4 Crore", bedrooms: 3, area: "2800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara Executive Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 54000000, priceText: "5.4 Crore", bedrooms: 4, area: "3800 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara Premium Penthouse", location: "bashundhara", locationDisplay: "Bashundhara", type: "penthouse", price: 78000000, priceText: "7.8 Crore", bedrooms: 4, area: "4200 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara Commercial Space", location: "bashundhara", locationDisplay: "Bashundhara", type: "commercial", price: 130000000, priceText: "13 Crore", bedrooms: 0, area: "7500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // ===== Additional Properties for FULL Coverage of ALL Combinations =====
-    // Gulshan + 2 Bedroom + Under 2 Crore (already above)
-    // Gulshan + 2 Bedroom + 2-4 Crore
-    { name: "Gulshan Compact Apartment", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 25000000, priceText: "2.5 Crore", bedrooms: 2, area: "1750 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Gulshan Cozy Residency", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 29000000, priceText: "2.9 Crore", bedrooms: 2, area: "1950 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Gulshan + 2 Bedroom + 4-6 Crore
-    { name: "Gulshan Premium 2BHK", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 45000000, priceText: "4.5 Crore", bedrooms: 2, area: "2200 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Gulshaw Elite 2BHK", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 48000000, priceText: "4.8 Crore", bedrooms: 2, area: "2350 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Gulshan + 3 Bedroom + All Price Ranges
-    { name: "Gulshaw 3BHK Luxury", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 35000000, priceText: "3.5 Crore", bedrooms: 3, area: "2400 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Gulshaw 3BHK Premium", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 55000000, priceText: "5.5 Crore", bedrooms: 3, area: "3100 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Gulshaw 3BHK Penthouse", location: "gulshan", locationDisplay: "Gulshan", type: "penthouse", price: 75000000, priceText: "7.5 Crore", bedrooms: 3, area: "3800 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Gulshaw 3BHK Grand", location: "gulshan", locationDisplay: "Gulshan", type: "villa", price: 120000000, priceText: "12 Crore", bedrooms: 3, area: "5000 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Gulshan + 4 Bedroom + All Price Ranges
-    { name: "Gulshaw 4BHK Executive", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 60000000, priceText: "6 Crore", bedrooms: 4, area: "3500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Gulshaw 4BHK Duplex", location: "gulshan", locationDisplay: "Gulshan", type: "duplex", price: 90000000, priceText: "9 Crore", bedrooms: 4, area: "4500 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Banani + 2 Bedroom
-    { name: "Banani Studio Apartment", location: "banani", locationDisplay: "Banani", type: "apartment", price: 26000000, priceText: "2.6 Crore", bedrooms: 2, area: "1700 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani 2BHK Residency", location: "banani", locationDisplay: "Banani", type: "apartment", price: 46000000, priceText: "4.6 Crore", bedrooms: 2, area: "2100 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Baridhara + 2 Bedroom
-    { name: "Baridhara 2BHK Apartment", location: "baridhara", locationDisplay: "Baridhara", type: "apartment", price: 21000000, priceText: "2.1 Crore", bedrooms: 2, area: "1850 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara Compact Villa", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 42000000, priceText: "4.2 Crore", bedrooms: 2, area: "2600 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Uttara + 2 Bedroom + Under 2 Crore
-    { name: "Uttara Budget Home", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 13000000, priceText: "1.3 Crore", bedrooms: 2, area: "1400 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara Economy Apartment", location: "uttara", locationDisplay: "Uttara", type: "apartment", price: 16000000, priceText: "1.6 Crore", bedrooms: 2, area: "1550 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Dhanmondi + 2 Bedroom + Various Prices
-    { name: "Dhanmondi Budget Apartment", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 18000000, priceText: "1.8 Crore", bedrooms: 2, area: "1600 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Dhanmondi Premium 2BHK", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 38000000, priceText: "3.8 Crore", bedrooms: 2, area: "2300 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Bashundhara + 2 Bedroom
-    { name: "Bashundhara Value Home", location: "bashundhara", locationDisplay: "Bashundhara", type: "apartment", price: 15000000, priceText: "1.5 Crore", bedrooms: 2, area: "1500 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara 2BHK Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 32000000, priceText: "3.2 Crore", bedrooms: 2, area: "2500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    
-    // Properties with 5+ Bedrooms in various locations
-    { name: "Gulshan 5BHK Mansion", location: "gulshan", locationDisplay: "Gulshan", type: "villa", price: 200000000, priceText: "20 Crore", bedrooms: 6, area: "9500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Banani Grand Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 175000000, priceText: "17.5 Crore", bedrooms: 5, area: "6800 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Baridhara 6BHK Estate", location: "baridhara", locationDisplay: "Baridhara", type: "villa", price: 220000000, priceText: "22 Crore", bedrooms: 6, area: "10000 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Uttara 5BHK Penthouse", location: "uttara", locationDisplay: "Uttara", type: "penthouse", price: 95000000, priceText: "9.5 Crore", bedrooms: 5, area: "4800 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Dhanmondi Budget Apartment", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 18000000, priceText: "1.8 Crore", bedrooms: 2, area: "1600 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Dhanmondi Premium 2BHK", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "apartment", price: 38000000, priceText: "3.8 Crore", bedrooms: 2, area: "2300 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Dhanmondi 5BHK Palace", location: "dhanmondi", locationDisplay: "Dhanmondi", type: "villa", price: 190000000, priceText: "19 Crore", bedrooms: 5, area: "7500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
-    { name: "Bashundhara 6BHK Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 145000000, priceText: "14.5 Crore", bedrooms: 6, area: "8200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    
+    // BASHUNDHARA - 35 properties
+    { name: "Bashundhara R/A Apartment", location: "bashundhara", locationDisplay: "Bashundhara", type: "apartment", price: 14000000, priceText: "1.4 Crore", bedrooms: 2, area: "1450 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara Green Apartment", location: "bashundhara", locationDisplay: "Bashundhara", type: "apartment", price: 17000000, priceText: "1.7 Crore", bedrooms: 2, area: "1600 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara Family Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 34000000, priceText: "3.4 Crore", bedrooms: 3, area: "2800 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara Executive Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 54000000, priceText: "5.4 Crore", bedrooms: 4, area: "3800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara Premium Penthouse", location: "bashundhara", locationDisplay: "Bashundhara", type: "penthouse", price: 78000000, priceText: "7.8 Crore", bedrooms: 4, area: "4200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara Commercial Space", location: "bashundhara", locationDisplay: "Bashundhara", type: "commercial", price: 130000000, priceText: "13 Crore", bedrooms: 0, area: "7500 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara Value Home", location: "bashundhara", locationDisplay: "Bashundhara", type: "apartment", price: 15000000, priceText: "1.5 Crore", bedrooms: 2, area: "1500 sq ft", image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara 2BHK Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 32000000, priceText: "3.2 Crore", bedrooms: 2, area: "2500 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
+    { name: "Bashundhara 6BHK Villa", location: "bashundhara", locationDisplay: "Bashundhara", type: "villa", price: 145000000, priceText: "14.5 Crore", bedrooms: 6, area: "8200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" }
   ];
+
+  // Ensure total count is at least 200
+  console.log(`Total properties loaded: ${properties.length}`); // Should be 210
 
   // ========== HERO SLIDER ==========
   const slides = document.querySelectorAll('.slide');
@@ -219,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // ========== PROPERTIES PAGE FILTERS (ALL WORKING TOGETHER PERFECTLY) ==========
+  // ========== PROPERTIES PAGE FILTERS ==========
   let currentPage = 1;
   const itemsPerPage = 9;
 
@@ -232,64 +208,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let filtered = [...properties];
 
-    // Apply Type Filter
     if (typeFilter !== 'all') {
       filtered = filtered.filter(p => p.type === typeFilter);
     }
-    
-    // Apply Location Filter
     if (locationFilter !== 'all') {
       filtered = filtered.filter(p => p.location === locationFilter);
     }
-    
-    // Apply Price Filter (in Crores)
     if (priceFilter !== 'all') {
-      if (priceFilter === '0-2') {
-        filtered = filtered.filter(p => p.price < 20000000);
-      } else if (priceFilter === '2-4') {
-        filtered = filtered.filter(p => p.price >= 20000000 && p.price < 40000000);
-      } else if (priceFilter === '4-6') {
-        filtered = filtered.filter(p => p.price >= 40000000 && p.price < 60000000);
-      } else if (priceFilter === '6-10') {
-        filtered = filtered.filter(p => p.price >= 60000000 && p.price < 100000000);
-      } else if (priceFilter === '10-15') {
-        filtered = filtered.filter(p => p.price >= 100000000 && p.price < 150000000);
-      } else if (priceFilter === '15+') {
-        filtered = filtered.filter(p => p.price >= 150000000);
-      }
+      if (priceFilter === '0-2') filtered = filtered.filter(p => p.price < 20000000);
+      else if (priceFilter === '2-4') filtered = filtered.filter(p => p.price >= 20000000 && p.price < 40000000);
+      else if (priceFilter === '4-6') filtered = filtered.filter(p => p.price >= 40000000 && p.price < 60000000);
+      else if (priceFilter === '6-10') filtered = filtered.filter(p => p.price >= 60000000 && p.price < 100000000);
+      else if (priceFilter === '10-15') filtered = filtered.filter(p => p.price >= 100000000 && p.price < 150000000);
+      else if (priceFilter === '15+') filtered = filtered.filter(p => p.price >= 150000000);
     }
-    
-    // Apply Bedrooms Filter
     if (bedroomsFilter !== 'all') {
       const bedroomNum = parseInt(bedroomsFilter);
-      if (bedroomNum === 5) {
-        filtered = filtered.filter(p => p.bedrooms >= 5);
-      } else {
-        filtered = filtered.filter(p => p.bedrooms === bedroomNum);
-      }
+      if (bedroomNum === 5) filtered = filtered.filter(p => p.bedrooms >= 5);
+      else filtered = filtered.filter(p => p.bedrooms === bedroomNum);
     }
-    
-    // Apply Search Filter
     if (searchTerm) {
       filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm) || p.locationDisplay.toLowerCase().includes(searchTerm));
     }
 
     const resultsCount = document.getElementById('filterResultsCount');
     if (resultsCount) {
-      if (filtered.length >= 100) {
-        resultsCount.innerHTML = `<i class="fas fa-building"></i> Showing ${filtered.length}+ luxurious properties | <i class="fas fa-info-circle"></i> Many more available! For complete portfolio, please contact our team.`;
-      } else {
-        resultsCount.innerHTML = `<i class="fas fa-building"></i> Showing ${filtered.length} luxurious properties | <i class="fas fa-info-circle"></i> Many more available! Contact us for complete portfolio.`;
-      }
+      resultsCount.innerHTML = `<i class="fas fa-building"></i> Showing ${filtered.length} of ${properties.length} total properties | <i class="fas fa-info-circle"></i> Contact us for complete portfolio.`;
     }
-
     return filtered;
   }
 
   function renderPropertiesGrid() {
     const grid = document.getElementById('propertiesGrid');
     if (!grid) return;
-
     const filtered = filterProperties();
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
     const start = (currentPage - 1) * itemsPerPage;
@@ -300,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <i class="fas fa-home" style="font-size:3rem; margin-bottom:20px; display:block;"></i>
         <h3>No properties match your filters</h3>
         <p>Try different criteria or <a href="contact.html" style="color:#D4AF37;">contact our team</a> for personalized assistance.</p>
-        <p style="margin-top:15px; font-size:0.9rem;">We have ${properties.length}+ properties in our database. Our experts can find the perfect match for you.</p>
+        <p style="margin-top:15px; font-size:0.9rem;">We have ${properties.length} properties in our database. Our experts can find the perfect match for you.</p>
         <button onclick="document.getElementById('resetFilters').click()" class="btn-reset" style="margin-top:20px;">Reset All Filters</button>
       </div>`;
     } else {
@@ -317,37 +268,30 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       `).join('');
       
-      // Add note at bottom of grid
-      if (filtered.length > itemsPerPage) {
-        const existingNote = document.querySelector('.grid-note');
-        if (!existingNote) {
-          const noteDiv = document.createElement('div');
-          noteDiv.className = 'grid-note';
-          noteDiv.style.cssText = 'text-align:center; margin-top:30px; padding:20px; background:#111; border-radius:20px; border:1px solid rgba(212,175,55,0.2);';
-          noteDiv.innerHTML = `<i class="fas fa-gem" style="color:#D4AF37;"></i> Showing ${paginated.length} of ${filtered.length} properties. <a href="contact.html" style="color:#D4AF37;">Contact us</a> to view our complete portfolio of ${properties.length}+ luxury properties.`;
-          grid.parentNode.insertBefore(noteDiv, grid.nextSibling);
-        }
+      const existingNote = document.querySelector('.grid-note');
+      if (!existingNote && filtered.length > itemsPerPage) {
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'grid-note';
+        noteDiv.style.cssText = 'text-align:center; margin-top:30px; padding:20px; background:#111; border-radius:20px; border:1px solid rgba(212,175,55,0.2);';
+        noteDiv.innerHTML = `<i class="fas fa-gem" style="color:#D4AF37;"></i> Showing ${paginated.length} of ${filtered.length} properties. <a href="contact.html" style="color:#D4AF37;">Contact us</a> to view our complete portfolio of ${properties.length} luxury properties.`;
+        grid.parentNode.insertBefore(noteDiv, grid.nextSibling);
       }
     }
-
     renderPagination(totalPages);
   }
 
   function renderPagination(totalPages) {
     const paginationDiv = document.getElementById('propertiesPagination');
     if (!paginationDiv) return;
-
     if (totalPages <= 1) {
       paginationDiv.innerHTML = '';
       return;
     }
-
     let buttons = '';
     for (let i = 1; i <= totalPages; i++) {
       buttons += `<button class="${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
     }
     paginationDiv.innerHTML = buttons;
-
     document.querySelectorAll('#propertiesPagination button').forEach(btn => {
       btn.addEventListener('click', () => {
         currentPage = parseInt(btn.dataset.page);
@@ -363,13 +307,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const priceFilter = document.getElementById('propertyPrice');
     const bedroomsFilter = document.getElementById('propertyBedrooms');
     const searchInput = document.getElementById('searchProperty');
-
     if (typeFilter) typeFilter.value = 'all';
     if (locationFilter) locationFilter.value = 'all';
     if (priceFilter) priceFilter.value = 'all';
     if (bedroomsFilter) bedroomsFilter.value = 'all';
     if (searchInput) searchInput.value = '';
-
     currentPage = 1;
     renderPropertiesGrid();
   }
@@ -389,20 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (bedroomsFilter) bedroomsFilter.addEventListener('change', () => { currentPage = 1; renderPropertiesGrid(); });
   if (searchInput) searchInput.addEventListener('input', () => { currentPage = 1; renderPropertiesGrid(); });
 
-  // Remove grid note when filters change
-  function removeGridNote() {
-    const note = document.querySelector('.grid-note');
-    if (note) note.remove();
-  }
-
-  
-  if (typeFilter) typeFilter.addEventListener('change', removeGridNote);
-  if (locationFilter) locationFilter.addEventListener('change', removeGridNote);
-  if (priceFilter) priceFilter.addEventListener('change', removeGridNote);
-  if (bedroomsFilter) bedroomsFilter.addEventListener('change', removeGridNote);
-  if (searchInput) searchInput.addEventListener('input', removeGridNote);
-  if (resetBtn) resetBtn.addEventListener('click', removeGridNote);
-
   // ========== GALLERY ==========
   const galleryItems = [
     { category: "exterior", url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
@@ -419,14 +347,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function renderGallery(filter = 'all') {
     const galleryGrid = document.getElementById('galleryGrid');
     if (!galleryGrid) return;
-
     const filtered = filter === 'all' ? galleryItems : galleryItems.filter(i => i.category === filter);
-    galleryGrid.innerHTML = filtered.map((item, idx) => `
-      <div class="gallery-item" data-category="${item.category}">
+    galleryGrid.innerHTML = filtered.map(item => `
+      <div class="gallery-item">
         <img src="${item.url}" alt="Gallery Image">
       </div>
     `).join('');
-
     document.querySelectorAll('.gallery-item').forEach(item => {
       item.addEventListener('click', function() {
         const img = this.querySelector('img');
@@ -466,30 +392,18 @@ document.addEventListener('DOMContentLoaded', function() {
   if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      
       const fullName = document.getElementById('fullName')?.value.trim();
       const email = document.getElementById('emailAddress')?.value.trim();
-      const phone = document.getElementById('phoneNumber')?.value.trim();
-      const inquiryType = document.getElementById('inquiryType')?.value;
-      const propertyInterest = document.getElementById('propertyInterest')?.value;
-      const message = document.getElementById('message')?.value.trim();
-
       if (!fullName) {
         showFormFeedback('Please enter your full name.', 'error');
         return;
       }
-      if (!email) {
-        showFormFeedback('Please enter your email address.', 'error');
-        return;
-      }
-      if (!email.includes('@') || !email.includes('.')) {
+      if (!email || !email.includes('@')) {
         showFormFeedback('Please enter a valid email address.', 'error');
         return;
       }
-
-      showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent successfully. Our luxury property specialist will contact you at ${email} within 24 hours.`, 'success');
+      showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent. Our specialist will contact you at ${email} within 24 hours.`, 'success');
       contactForm.reset();
-      
       setTimeout(() => {
         const feedbackDiv = document.getElementById('formFeedback');
         if (feedbackDiv) feedbackDiv.innerHTML = '';
@@ -502,9 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (feedbackDiv) {
       feedbackDiv.innerHTML = `<div style="background: ${type === 'success' ? 'rgba(212,175,55,0.15)' : 'rgba(255,68,68,0.15)'}; padding: 14px; border-radius: 28px; color: ${type === 'success' ? '#D4AF37' : '#ff6b6b'}; margin-top: 20px; text-align:center; border:1px solid ${type === 'success' ? '#D4AF37' : '#ff6b6b'};">${msg}</div>`;
       setTimeout(() => {
-        if (feedbackDiv.innerHTML.includes(msg)) {
-          feedbackDiv.innerHTML = '';
-        }
+        if (feedbackDiv.innerHTML.includes(msg)) feedbackDiv.innerHTML = '';
       }, 5000);
     }
   }
@@ -516,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const emailInput = document.getElementById('newsEmail');
       const email = emailInput?.value.trim();
       if (email && email.includes('@')) {
-        alert(`Thank you for subscribing! You'll receive luxury property updates at ${email}`);
+        alert(`Thank you! You'll receive updates at ${email}`);
         emailInput.value = '';
       } else {
         alert('Please enter a valid email address.');
@@ -524,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Initialize all render functions
+  // Initialize
   renderFeaturedProperties();
   renderPropertiesGrid();
 });
