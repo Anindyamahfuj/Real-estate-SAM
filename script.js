@@ -484,7 +484,7 @@ window.addEventListener('scroll', () => {
 
 
 
-// ========== AI PROPERTY ASSISTANT (FIXED) ==========
+// ========== AI PROPERTY ASSISTANT (FINAL WORKING) ==========
 (function() {
   let aiInitialized = false;
 
@@ -499,10 +499,20 @@ window.addEventListener('scroll', () => {
     const aiUserInput = document.getElementById('aiUserInput');
     const aiChatMessages = document.getElementById('aiChatMessages');
 
-    if (!aiChatBtn || !aiChatWidget) return;
+    // If any element is missing, exit
+    if (!aiChatBtn || !aiChatWidget || !aiCloseChat || !aiSendBtn || !aiUserInput || !aiChatMessages) {
+      console.warn('AI chat elements missing from DOM');
+      return;
+    }
 
-    aiChatBtn.addEventListener('click', () => aiChatWidget.classList.toggle('open'));
-    if (aiCloseChat) aiCloseChat.addEventListener('click', () => aiChatWidget.classList.remove('open'));
+    // Open/close widget
+    aiChatBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      aiChatWidget.classList.toggle('open');
+    });
+    aiCloseChat.addEventListener('click', () => {
+      aiChatWidget.classList.remove('open');
+    });
 
     function addMessage(text, isUser = false) {
       const msgDiv = document.createElement('div');
@@ -539,22 +549,23 @@ window.addEventListener('scroll', () => {
         explanation += `🛏️ ${beds}+ bedrooms. `;
       }
 
-      let underMatch = query.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
+      // Price parsing (crore)
+      const underMatch = query.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
       if (underMatch) {
-        let maxPrice = parseFloat(underMatch[1]) * 10000000;
+        const maxPrice = parseFloat(underMatch[1]) * 10000000;
         filtered = filtered.filter(p => p.price < maxPrice);
         explanation += `💰 Under ${underMatch[1]} crore. `;
       }
-      let betweenMatch = query.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
+      const betweenMatch = query.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
       if (betweenMatch) {
-        let minPrice = parseFloat(betweenMatch[1]) * 10000000;
-        let maxPrice = parseFloat(betweenMatch[2]) * 10000000;
+        const minPrice = parseFloat(betweenMatch[1]) * 10000000;
+        const maxPrice = parseFloat(betweenMatch[2]) * 10000000;
         filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
         explanation += `💰 Between ${betweenMatch[1]} and ${betweenMatch[2]} crore. `;
       }
-      let aboveMatch = query.match(/above\s*(\d+(?:\.\d+)?)\s*crore/);
+      const aboveMatch = query.match(/above\s*(\d+(?:\.\d+)?)\s*crore/);
       if (aboveMatch) {
-        let minPrice = parseFloat(aboveMatch[1]) * 10000000;
+        const minPrice = parseFloat(aboveMatch[1]) * 10000000;
         filtered = filtered.filter(p => p.price >= minPrice);
         explanation += `💰 Above ${aboveMatch[1]} crore. `;
       }
@@ -589,7 +600,7 @@ window.addEventListener('scroll', () => {
       const { filtered, explanation } = parseQueryAndFilter(query);
 
       if (filtered.length === 0) {
-        addMessage("😔 No properties match your criteria. Try different keywords or contact our team for personalized assistance.");
+        addMessage("😔 No properties match your criteria. Try different keywords or contact our team.");
       } else {
         let reply = `✅ Found ${filtered.length} property(ies). ${explanation}<br><br>`;
         if (filtered.length <= 3) {
@@ -602,29 +613,27 @@ window.addEventListener('scroll', () => {
           filtered.slice(0, 3).forEach(p => {
             reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
           });
-          reply += `✨ And ${filtered.length - 3} more. Use the filters on the Properties page to explore all.`;
+          reply += `✨ And ${filtered.length - 3} more. Use filters on the Properties page.`;
         }
         addMessage(reply);
       }
     }
 
-    if (aiSendBtn && aiUserInput) {
-      aiSendBtn.addEventListener('click', () => processQuery(aiUserInput.value));
-      aiUserInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') processQuery(aiUserInput.value);
-      });
-    }
+    aiSendBtn.addEventListener('click', () => processQuery(aiUserInput.value));
+    aiUserInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') processQuery(aiUserInput.value);
+    });
   }
 
-  // Poll for the 'properties' variable (defined elsewhere in your script)
+  // Wait for the global `properties` array to be defined (polling)
   let attempts = 0;
-  const checkInterval = setInterval(() => {
+  const interval = setInterval(() => {
     if (typeof properties !== 'undefined' && properties.length > 0) {
-      clearInterval(checkInterval);
+      clearInterval(interval);
       initAI(properties);
-    } else if (attempts > 50) { // ~5 seconds
-      clearInterval(checkInterval);
-      console.warn('AI: properties not found after 5 seconds');
+    } else if (attempts > 50) {
+      clearInterval(interval);
+      console.warn('AI could not find properties array');
     }
     attempts++;
   }, 100);
