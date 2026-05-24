@@ -144,5 +144,31 @@
   </footer>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
+
+
+<!-- AI Property Assistant Widget -->
+<div class="ai-chat-btn" id="aiChatBtn">
+  <i class="fas fa-robot"></i>
+  <span class="ai-pulse"></span>
+</div>
+
+<div class="ai-chat-widget" id="aiChatWidget">
+  <div class="ai-chat-header">
+    <i class="fas fa-robot"></i> SAM AI Assistant
+    <button id="aiCloseChat"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="ai-chat-messages" id="aiChatMessages">
+    <div class="ai-message ai-bot">
+      👋 Hi! I'm SAM AI. Ask me anything about our properties.<br>
+      Example: "Show 3BHK villas in Gulshan under 10 crore"
+    </div>
+  </div>
+  <div class="ai-chat-input">
+    <input type="text" id="aiUserInput" placeholder="Ask me about properties...">
+    <button id="aiSendBtn"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+
+  
 </body>
 </html>
