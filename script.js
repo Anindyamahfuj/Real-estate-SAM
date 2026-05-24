@@ -481,3 +481,160 @@ window.addEventListener('scroll', () => {
     navbar.style.boxShadow = 'none';
   }
 });
+
+
+
+// ========== AI PROPERTY ASSISTANT ==========
+(function() {
+  // Wait for DOM and properties array to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAI);
+  } else {
+    initAI();
+  }
+
+  function initAI() {
+    // Get elements
+    const aiChatBtn = document.getElementById('aiChatBtn');
+    const aiChatWidget = document.getElementById('aiChatWidget');
+    const aiCloseChat = document.getElementById('aiCloseChat');
+    const aiSendBtn = document.getElementById('aiSendBtn');
+    const aiUserInput = document.getElementById('aiUserInput');
+    const aiChatMessages = document.getElementById('aiChatMessages');
+
+    if (!aiChatBtn || !aiChatWidget) return;
+
+    // Toggle chat widget
+    aiChatBtn.addEventListener('click', () => {
+      aiChatWidget.classList.toggle('open');
+    });
+    if (aiCloseChat) {
+      aiCloseChat.addEventListener('click', () => {
+        aiChatWidget.classList.remove('open');
+      });
+    }
+
+    function addMessage(text, isUser = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`;
+      msgDiv.innerHTML = text;
+      aiChatMessages.appendChild(msgDiv);
+      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+    }
+
+    function locationDisplay(locId) {
+      const map = { gulshan:'Gulshan', banani:'Banani', baridhara:'Baridhara', uttara:'Uttara', dhanmondi:'Dhanmondi', bashundhara:'Bashundhara' };
+      return map[locId] || locId;
+    }
+
+    function parseQueryAndFilter(query, properties) {
+      query = query.toLowerCase();
+      let filtered = [...properties];
+      let explanation = '';
+
+      // Location
+      const locations = ['gulshan', 'banani', 'baridhara', 'uttara', 'dhanmondi', 'bashundhara'];
+      for (let loc of locations) {
+        if (query.includes(loc)) {
+          filtered = filtered.filter(p => p.location === loc);
+          explanation += `📍 Location: ${locationDisplay(loc)}. `;
+          break;
+        }
+      }
+
+      // Bedrooms
+      const bedMatch = query.match(/(\d+)\s*bed/);
+      if (bedMatch) {
+        const beds = parseInt(bedMatch[1]);
+        if (beds >= 5) filtered = filtered.filter(p => p.bedrooms >= 5);
+        else filtered = filtered.filter(p => p.bedrooms === beds);
+        explanation += `🛏️ ${beds}+ bedrooms. `;
+      }
+
+      // Price
+      let underMatch = query.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
+      if (underMatch) {
+        let maxPrice = parseFloat(underMatch[1]) * 10000000;
+        filtered = filtered.filter(p => p.price < maxPrice);
+        explanation += `💰 Under ${underMatch[1]} crore. `;
+      }
+      let betweenMatch = query.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
+      if (betweenMatch) {
+        let minPrice = parseFloat(betweenMatch[1]) * 10000000;
+        let maxPrice = parseFloat(betweenMatch[2]) * 10000000;
+        filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
+        explanation += `💰 Between ${betweenMatch[1]} and ${betweenMatch[2]} crore. `;
+      }
+      let aboveMatch = query.match(/above\s*(\d+(?:\.\d+)?)\s*crore/);
+      if (aboveMatch) {
+        let minPrice = parseFloat(aboveMatch[1]) * 10000000;
+        filtered = filtered.filter(p => p.price >= minPrice);
+        explanation += `💰 Above ${aboveMatch[1]} crore. `;
+      }
+
+      // Property type
+      if (query.includes('apartment') || query.includes('flat')) {
+        filtered = filtered.filter(p => p.type === 'apartment');
+        explanation += `🏢 Apartment. `;
+      } else if (query.includes('villa')) {
+        filtered = filtered.filter(p => p.type === 'villa');
+        explanation += `🏡 Villa. `;
+      } else if (query.includes('penthouse')) {
+        filtered = filtered.filter(p => p.type === 'penthouse');
+        explanation += `✨ Penthouse. `;
+      } else if (query.includes('commercial')) {
+        filtered = filtered.filter(p => p.type === 'commercial');
+        explanation += `🏢 Commercial space. `;
+      }
+
+      return { filtered, explanation };
+    }
+
+    async function processQuery(query) {
+      if (!query.trim()) return;
+      addMessage(query, true);
+      aiUserInput.value = '';
+
+      // Greeting
+      if (query.match(/^(hi|hello|hey|greetings)/i)) {
+        addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
+        return;
+      }
+
+      // Access the global properties array (defined elsewhere in your script)
+      const globalProperties = window.properties || (typeof properties !== 'undefined' ? properties : []);
+      if (!globalProperties.length) {
+        addMessage("⚠️ Property data is loading. Please try again in a moment.");
+        return;
+      }
+
+      const { filtered, explanation } = parseQueryAndFilter(query, globalProperties);
+
+      if (filtered.length === 0) {
+        addMessage("😔 No properties match your criteria. Try different keywords or contact our team for personalized assistance.");
+      } else {
+        let reply = `✅ Found ${filtered.length} property(ies). ${explanation}<br><br>`;
+        if (filtered.length <= 3) {
+          filtered.forEach(p => {
+            reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
+          });
+          reply += `📞 Contact us for more details or to schedule a viewing.`;
+        } else {
+          reply += `Here are the first 3 matches:<br><br>`;
+          filtered.slice(0, 3).forEach(p => {
+            reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
+          });
+          reply += `✨ And ${filtered.length - 3} more. Use the filters on the Properties page to explore all.`;
+        }
+        addMessage(reply);
+      }
+    }
+
+    if (aiSendBtn && aiUserInput) {
+      aiSendBtn.addEventListener('click', () => processQuery(aiUserInput.value));
+      aiUserInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') processQuery(aiUserInput.value);
+      });
+    }
+  }
+})();
