@@ -484,17 +484,14 @@ window.addEventListener('scroll', () => {
 
 
 
-// ========== AI PROPERTY ASSISTANT ==========
+// ========== AI PROPERTY ASSISTANT (FIXED) ==========
 (function() {
-  // Wait for DOM and properties array to be ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAI);
-  } else {
-    initAI();
-  }
+  let aiInitialized = false;
 
-  function initAI() {
-    // Get elements
+  function initAI(propertiesList) {
+    if (aiInitialized) return;
+    aiInitialized = true;
+
     const aiChatBtn = document.getElementById('aiChatBtn');
     const aiChatWidget = document.getElementById('aiChatWidget');
     const aiCloseChat = document.getElementById('aiCloseChat');
@@ -504,15 +501,8 @@ window.addEventListener('scroll', () => {
 
     if (!aiChatBtn || !aiChatWidget) return;
 
-    // Toggle chat widget
-    aiChatBtn.addEventListener('click', () => {
-      aiChatWidget.classList.toggle('open');
-    });
-    if (aiCloseChat) {
-      aiCloseChat.addEventListener('click', () => {
-        aiChatWidget.classList.remove('open');
-      });
-    }
+    aiChatBtn.addEventListener('click', () => aiChatWidget.classList.toggle('open'));
+    if (aiCloseChat) aiCloseChat.addEventListener('click', () => aiChatWidget.classList.remove('open'));
 
     function addMessage(text, isUser = false) {
       const msgDiv = document.createElement('div');
@@ -527,12 +517,11 @@ window.addEventListener('scroll', () => {
       return map[locId] || locId;
     }
 
-    function parseQueryAndFilter(query, properties) {
+    function parseQueryAndFilter(query) {
       query = query.toLowerCase();
-      let filtered = [...properties];
+      let filtered = [...propertiesList];
       let explanation = '';
 
-      // Location
       const locations = ['gulshan', 'banani', 'baridhara', 'uttara', 'dhanmondi', 'bashundhara'];
       for (let loc of locations) {
         if (query.includes(loc)) {
@@ -542,7 +531,6 @@ window.addEventListener('scroll', () => {
         }
       }
 
-      // Bedrooms
       const bedMatch = query.match(/(\d+)\s*bed/);
       if (bedMatch) {
         const beds = parseInt(bedMatch[1]);
@@ -551,7 +539,6 @@ window.addEventListener('scroll', () => {
         explanation += `🛏️ ${beds}+ bedrooms. `;
       }
 
-      // Price
       let underMatch = query.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
       if (underMatch) {
         let maxPrice = parseFloat(underMatch[1]) * 10000000;
@@ -572,7 +559,6 @@ window.addEventListener('scroll', () => {
         explanation += `💰 Above ${aboveMatch[1]} crore. `;
       }
 
-      // Property type
       if (query.includes('apartment') || query.includes('flat')) {
         filtered = filtered.filter(p => p.type === 'apartment');
         explanation += `🏢 Apartment. `;
@@ -590,25 +576,17 @@ window.addEventListener('scroll', () => {
       return { filtered, explanation };
     }
 
-    async function processQuery(query) {
+    function processQuery(query) {
       if (!query.trim()) return;
       addMessage(query, true);
       aiUserInput.value = '';
 
-      // Greeting
       if (query.match(/^(hi|hello|hey|greetings)/i)) {
         addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
         return;
       }
 
-      // Access the global properties array (defined elsewhere in your script)
-      const globalProperties = window.properties || (typeof properties !== 'undefined' ? properties : []);
-      if (!globalProperties.length) {
-        addMessage("⚠️ Property data is loading. Please try again in a moment.");
-        return;
-      }
-
-      const { filtered, explanation } = parseQueryAndFilter(query, globalProperties);
+      const { filtered, explanation } = parseQueryAndFilter(query);
 
       if (filtered.length === 0) {
         addMessage("😔 No properties match your criteria. Try different keywords or contact our team for personalized assistance.");
@@ -637,4 +615,17 @@ window.addEventListener('scroll', () => {
       });
     }
   }
+
+  // Poll for the 'properties' variable (defined elsewhere in your script)
+  let attempts = 0;
+  const checkInterval = setInterval(() => {
+    if (typeof properties !== 'undefined' && properties.length > 0) {
+      clearInterval(checkInterval);
+      initAI(properties);
+    } else if (attempts > 50) { // ~5 seconds
+      clearInterval(checkInterval);
+      console.warn('AI: properties not found after 5 seconds');
+    }
+    attempts++;
+  }, 100);
 })();
