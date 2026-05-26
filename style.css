@@ -1209,3 +1209,10 @@ html{
   .ai-chat-widget { width: 300px; height: 450px; right: 15px; bottom: 80px; }
   .ai-chat-btn { width: 50px; height: 50px; bottom: 20px; right: 20px; }
 }
+
+
+.heroImage img {
+  width: min(100%, 420px);
+  height: auto;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+}
