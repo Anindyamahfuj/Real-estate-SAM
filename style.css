@@ -51,6 +51,20 @@ body {
   color: transparent;
 }
 
+
+/* Logo image styling */
+.site-logo {
+  max-height: 60px;      /* adjust to fit your navbar */
+  width: auto;
+  display: block;
+}
+
+/* If you want the logo to be clickable (link to home) */
+.logo a {
+  display: inline-block;
+}
+
+
 .logo span {
   font-weight: 500;
   color: #D4AF37;
