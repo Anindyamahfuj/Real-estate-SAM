@@ -1230,3 +1230,81 @@ html{
   height: auto;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
 }
+
+
+
+
+
+/* Company Concern Section */
+.company-concern {
+  margin-top: 30px;
+  padding: 20px 0 10px;
+}
+
+.concern-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e67e22, #d4c9b0, #e67e22, transparent);
+  margin-bottom: 25px;
+}
+
+.concern-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.concern-text {
+  font-size: 0.95rem;
+  color: #5a6e6b;
+  letter-spacing: 0.5px;
+}
+
+.concern-text i {
+  color: #e67e22;
+  margin-right: 8px;
+}
+
+.concern-text strong {
+  color: #e67e22;
+  font-weight: 700;
+}
+
+.concern-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f6f2;
+  padding: 8px 24px;
+  border-radius: 40px;
+  text-decoration: none;
+  color: #e67e22;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  border: 1px solid #f0e5d8;
+}
+
+.concern-link i {
+  font-size: 0.8rem;
+}
+
+.concern-link:hover {
+  background: #e67e22;
+  color: white;
+  border-color: #e67e22;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .concern-text {
+    font-size: 0.8rem;
+  }
+  .concern-link {
+    padding: 6px 18px;
+    font-size: 0.75rem;
+  }
+}
+
+
