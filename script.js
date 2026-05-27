@@ -267,98 +267,47 @@ document.addEventListener('DOMContentLoaded', function() {
     return filtered;
   }
 
-  function renderPropertiesGrid() {
-    const grid = document.getElementById('propertiesGrid');
-    if (!grid) return;
-    const filtered = filterProperties();
-    const totalPages = Math.ceil(filtered.length / itemsPerPage);
-    const start = (currentPage - 1) * itemsPerPage;
-    const paginated = filtered.slice(start, start + itemsPerPage);
+ function renderPropertiesGrid() {
+  const grid = document.getElementById('propertiesGrid');
+  if (!grid) return;
+  const filtered = filterProperties();
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const start = (currentPage - 1) * itemsPerPage;
+  const paginated = filtered.slice(start, start + itemsPerPage);
 
-    if (paginated.length === 0) {
-      grid.innerHTML = `<div style="text-align:center; padding:60px; color:#aaa;">
-        <i class="fas fa-home" style="font-size:3rem; margin-bottom:20px; display:block;"></i>
-        <h3>No properties match your filters</h3>
-        <p>Try different criteria or <a href="contact.html" style="color:#D4AF37;">contact our team</a> for personalized assistance.</p>
-        <p style="margin-top:15px; font-size:0.9rem;">We have ${properties.length} properties in our database. Our experts can find the perfect match for you.</p>
-        <button onclick="document.getElementById('resetFilters').click()" class="btn-reset" style="margin-top:20px;">Reset All Filters</button>
-      </div>`;
-    } else {
-      grid.innerHTML = paginated.map(prop => `
-        <div class="property-card">
-          <img src="${prop.image}" alt="${prop.name}" class="property-img">
-          <div class="property-info">
-            <h3>${prop.name}</h3>
-            <div class="property-location"><i class="fas fa-map-pin"></i> ${prop.locationDisplay}</div>
-            <div class="property-price">৳ ${prop.priceText}</div>
-            <p>${prop.bedrooms ? `${prop.bedrooms} Beds | ` : 'Commercial Space | '}${prop.area}</p>
-            <a href="contact.html?property=${encodeURIComponent(prop.name)}&type=${prop.type}" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
-          </div>
+  if (paginated.length === 0) {
+    grid.innerHTML = `<div style="text-align:center; padding:60px; color:#aaa;">
+      <i class="fas fa-home" style="font-size:3rem; margin-bottom:20px; display:block;"></i>
+      <h3>No properties match your filters</h3>
+      <p>Try different criteria or <a href="contact.html" style="color:#D4AF37;">contact our team</a> for personalized assistance.</p>
+      <p style="margin-top:15px; font-size:0.9rem;">We have ${properties.length} properties in our database. Our experts can find the perfect match for you.</p>
+      <button onclick="document.getElementById('resetFilters').click()" class="btn-reset" style="margin-top:20px;">Reset All Filters</button>
+    </div>`;
+  } else {
+    grid.innerHTML = paginated.map(prop => `
+      <div class="property-card">
+        <img src="${prop.image}" alt="${prop.name}" class="property-img">
+        <div class="property-info">
+          <h3>${prop.name}</h3>
+          <div class="property-location"><i class="fas fa-map-pin"></i> ${prop.locationDisplay}</div>
+          <div class="property-price">৳ ${prop.priceText}</div>
+          <p>${prop.bedrooms ? `${prop.bedrooms} Beds | ` : 'Commercial Space | '}${prop.area}</p>
+          <a href="contact.html?property=${encodeURIComponent(prop.name)}&type=${prop.type}" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
         </div>
-      `).join('');
-      
-      const existingNote = document.querySelector('.grid-note');
-      if (!existingNote && filtered.length > itemsPerPage) {
-        const noteDiv = document.createElement('div');
-        noteDiv.className = 'grid-note';
-        noteDiv.style.cssText = 'text-align:center; margin-top:30px; padding:20px; background:#111; border-radius:20px; border:1px solid rgba(212,175,55,0.2);';
-        noteDiv.innerHTML = `<i class="fas fa-gem" style="color:#D4AF37;"></i> Showing ${paginated.length} of ${filtered.length} properties. <a href="contact.html" style="color:#D4AF37;">Contact us</a> to view our complete portfolio of ${properties.length} luxury properties.`;
-        grid.parentNode.insertBefore(noteDiv, grid.nextSibling);
-      }
+      </div>
+    `).join('');
+    
+    const existingNote = document.querySelector('.grid-note');
+    if (!existingNote && filtered.length > itemsPerPage) {
+      const noteDiv = document.createElement('div');
+      noteDiv.className = 'grid-note';
+      noteDiv.style.cssText = 'text-align:center; margin-top:30px; padding:20px; background:#111; border-radius:20px; border:1px solid rgba(212,175,55,0.2);';
+      noteDiv.innerHTML = `<i class="fas fa-gem" style="color:#D4AF37;"></i> Showing ${paginated.length} of ${filtered.length} properties. <a href="contact.html" style="color:#D4AF37;">Contact us</a> to view our complete portfolio of ${properties.length} luxury properties.`;
+      grid.parentNode.insertBefore(noteDiv, grid.nextSibling);
     }
-    renderPagination(totalPages);
   }
-
-  function renderPagination(totalPages) {
-    const paginationDiv = document.getElementById('propertiesPagination');
-    if (!paginationDiv) return;
-    if (totalPages <= 1) {
-      paginationDiv.innerHTML = '';
-      return;
-    }
-    let buttons = '';
-    for (let i = 1; i <= totalPages; i++) {
-      buttons += `<button class="${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-    }
-    paginationDiv.innerHTML = buttons;
-    document.querySelectorAll('#propertiesPagination button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentPage = parseInt(btn.dataset.page);
-        renderPropertiesGrid();
-        window.scrollTo({ top: 400, behavior: 'smooth' });
-      });
-    });
-  }
-
-  function resetFilters() {
-    const typeFilter = document.getElementById('propertyType');
-    const locationFilter = document.getElementById('propertyLocation');
-    const priceFilter = document.getElementById('propertyPrice');
-    const bedroomsFilter = document.getElementById('propertyBedrooms');
-    const searchInput = document.getElementById('searchProperty');
-    if (typeFilter) typeFilter.value = 'all';
-    if (locationFilter) locationFilter.value = 'all';
-    if (priceFilter) priceFilter.value = 'all';
-    if (bedroomsFilter) bedroomsFilter.value = 'all';
-    if (searchInput) searchInput.value = '';
-    currentPage = 1;
-    renderPropertiesGrid();
-  }
-
-  const resetBtn = document.getElementById('resetFilters');
-  if (resetBtn) resetBtn.addEventListener('click', resetFilters);
-
-  const typeFilter = document.getElementById('propertyType');
-  const locationFilter = document.getElementById('propertyLocation');
-  const priceFilter = document.getElementById('propertyPrice');
-  const bedroomsFilter = document.getElementById('propertyBedrooms');
-  const searchInput = document.getElementById('searchProperty');
-
-  if (typeFilter) typeFilter.addEventListener('change', () => { currentPage = 1; renderPropertiesGrid(); });
-  if (locationFilter) locationFilter.addEventListener('change', () => { currentPage = 1; renderPropertiesGrid(); });
-  if (priceFilter) priceFilter.addEventListener('change', () => { currentPage = 1; renderPropertiesGrid(); });
-  if (bedroomsFilter) bedroomsFilter.addEventListener('change', () => { currentPage = 1; renderPropertiesGrid(); });
-  if (searchInput) searchInput.addEventListener('input', () => { currentPage = 1; renderPropertiesGrid(); });
+  renderPagination(totalPages);
+}
 
   // ========== GALLERY (unchanged) ==========
   const galleryItems = [
