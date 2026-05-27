@@ -445,3 +445,113 @@ window.addEventListener('scroll', () => {
     navbar.style.boxShadow = 'none';
   }
 });
+
+
+// ========== ENHANCED CONTACT FORM HANDLER (with extra fields) ==========
+// Read URL parameters from "Inquire Now" buttons
+const urlParams = new URLSearchParams(window.location.search);
+const propertyName = urlParams.get('property');
+const propertyType = urlParams.get('type');
+
+const inquiryTypeSelect = document.getElementById('inquiryType');
+const propertyInterestSelect = document.getElementById('propertyInterest');
+const buyExtraDiv = document.getElementById('buyExtraFields');
+const buyPrice = document.getElementById('buyPrice');
+const buyPropertyName = document.getElementById('buyPropertyName');
+const buyArea = document.getElementById('buyArea');
+const buyLocation = document.getElementById('buyLocation');
+
+// Pre‑fill from URL parameters
+if (propertyName && inquiryTypeSelect) {
+  inquiryTypeSelect.value = 'buy';
+  const messageField = document.getElementById('message');
+  if (messageField) messageField.value = `I am interested in buying this property: ${propertyName}`;
+}
+if (propertyType && propertyInterestSelect) {
+  let mappedType = propertyType;
+  if (propertyType === 'apartment') mappedType = 'apartment';
+  else if (propertyType === 'villa') mappedType = 'villa';
+  else if (propertyType === 'penthouse') mappedType = 'penthouse';
+  else if (propertyType === 'commercial') mappedType = 'commercial';
+  else mappedType = '';
+  if (mappedType) propertyInterestSelect.value = mappedType;
+}
+
+// Show/hide extra fields when "Looking to Buy" is selected
+function toggleBuyExtraFields() {
+  if (inquiryTypeSelect && buyExtraDiv) {
+    if (inquiryTypeSelect.value === 'buy') {
+      buyExtraDiv.style.display = 'block';
+      if (buyPrice) buyPrice.required = true;
+      if (buyPropertyName) buyPropertyName.required = true;
+      if (buyArea) buyArea.required = true;
+      if (buyLocation) buyLocation.required = true;
+    } else {
+      buyExtraDiv.style.display = 'none';
+      if (buyPrice) buyPrice.required = false;
+      if (buyPropertyName) buyPropertyName.required = false;
+      if (buyArea) buyArea.required = false;
+      if (buyLocation) buyLocation.required = false;
+    }
+  }
+}
+if (inquiryTypeSelect) {
+  inquiryTypeSelect.addEventListener('change', toggleBuyExtraFields);
+  toggleBuyExtraFields(); // initial check
+}
+
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const fullName = document.getElementById('fullName')?.value.trim();
+    const email = document.getElementById('emailAddress')?.value.trim();
+    const phone = document.getElementById('phoneNumber')?.value.trim();
+    const inquiryType = inquiryTypeSelect?.value;
+    const propertyInterest = propertyInterestSelect?.value;
+    const message = document.getElementById('message')?.value.trim();
+
+    // Main fields validation
+    if (!fullName) { showFormFeedback('Please enter your full name.', 'error'); return; }
+    if (!email) { showFormFeedback('Please enter your email address.', 'error'); return; }
+    if (!email.includes('@') || !email.includes('.')) { showFormFeedback('Enter a valid email (e.g., name@domain.com).', 'error'); return; }
+    if (!phone) { showFormFeedback('Phone number is required.', 'error'); return; }
+    if (!/^\d+$/.test(phone)) { showFormFeedback('Phone number must contain only digits.', 'error'); return; }
+    if (!inquiryType) { showFormFeedback('Please select an inquiry type.', 'error'); return; }
+    if (!propertyInterest) { showFormFeedback('Please select your interested property type.', 'error'); return; }
+    if (!message) { showFormFeedback('Please write a message.', 'error'); return; }
+
+    // Extra fields validation only if "Looking to Buy"
+    if (inquiryType === 'buy') {
+      if (!buyPrice?.value.trim()) { showFormFeedback('Expected price is required.', 'error'); return; }
+      const priceVal = parseFloat(buyPrice.value.trim());
+      if (isNaN(priceVal)) { showFormFeedback('Price must be a number (e.g., 5.2).', 'error'); return; }
+      if (!buyPropertyName?.value.trim()) { showFormFeedback('Exact property name is required.', 'error'); return; }
+      if (!buyArea?.value.trim()) { showFormFeedback('Area (sq ft) is required.', 'error'); return; }
+      const areaVal = parseFloat(buyArea.value.trim());
+      if (isNaN(areaVal)) { showFormFeedback('Area must be a number.', 'error'); return; }
+      if (!buyLocation?.value.trim()) { showFormFeedback('Location is required.', 'error'); return; }
+    }
+
+    // All valid
+    showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent. We will contact you at ${email} within 24 hours.`, 'success');
+    contactForm.reset();
+    if (buyExtraDiv) buyExtraDiv.style.display = 'none';
+    
+    setTimeout(() => {
+      const feedbackDiv = document.getElementById('formFeedback');
+      if (feedbackDiv) feedbackDiv.innerHTML = '';
+    }, 5000);
+  });
+}
+
+function showFormFeedback(msg, type) {
+  const feedbackDiv = document.getElementById('formFeedback');
+  if (feedbackDiv) {
+    feedbackDiv.innerHTML = `<div style="background: ${type === 'success' ? 'rgba(212,175,55,0.15)' : 'rgba(255,68,68,0.15)'}; padding: 14px; border-radius: 28px; color: ${type === 'success' ? '#D4AF37' : '#ff6b6b'}; margin-top: 20px; text-align:center; border:1px solid ${type === 'success' ? '#D4AF37' : '#ff6b6b'};">${msg}</div>`;
+    setTimeout(() => {
+      if (feedbackDiv.innerHTML.includes(msg)) feedbackDiv.innerHTML = '';
+    }, 5000);
+  }
+}
