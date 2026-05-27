@@ -66,8 +66,8 @@
               <input type="email" id="emailAddress" placeholder="Email Address" required>
             </div>
             <div class="form-row">
-              <input type="tel" id="phoneNumber" placeholder="Phone Number">
-              <select id="inquiryType">
+              <input type="tel" id="phoneNumber" placeholder="Phone Number" required>
+              <select id="inquiryType" required>
                 <option value="">Select Inquiry Type</option>
                 <option value="buy">Looking to Buy</option>
                 <option value="sell">Looking to Sell</option>
@@ -76,16 +76,29 @@
                 <option value="other">Other</option>
               </select>
             </div>
-            <select id="propertyInterest" style="margin-bottom:20px; width:100%; padding:14px 18px; background:#1a1a1a; border:1px solid rgba(212,175,55,0.2); border-radius:28px; color:white;">
-              <option value="">Interested Property Type (Optional)</option>
+            <select id="propertyInterest" required style="margin-bottom:20px; width:100%; padding:14px 18px; background:#1a1a1a; border:1px solid rgba(212,175,55,0.2); border-radius:28px; color:white;">
+              <option value="">Interested Property Type</option>
               <option value="apartment">Luxury Apartment</option>
               <option value="villa">Private Villa</option>
               <option value="penthouse">Penthouse</option>
               <option value="commercial">Commercial Space</option>
               <option value="land">Land/Plot</option>
             </select>
-            <textarea id="message" rows="5" placeholder="Your Message (Tell us about your requirements)"></textarea>
-            <button type="submit" class="btn-primary-full" id="submitInquiry"><i class="fas fa-paper-plane"></i> Send Inquiry →</button>
+
+            <!-- Extra fields for "Looking to Sell" – hidden by default -->
+            <div id="sellExtraFields" style="display: none;">
+              <div class="form-row">
+                <input type="text" id="sellPrice" placeholder="Expected Price (in Crore, e.g. 5.2)">
+                <input type="text" id="sellPropertyName" placeholder="Exact Property Name">
+              </div>
+              <div class="form-row">
+                <input type="text" id="sellArea" placeholder="Area (sq ft)">
+                <input type="text" id="sellLocation" placeholder="Location (e.g. Gulshan, Banani)">
+              </div>
+            </div>
+
+            <textarea id="message" rows="5" placeholder="Your Message (Tell us about your requirements)" required></textarea>
+            <button type="submit" class="btn-primary-full"><i class="fas fa-paper-plane"></i> Send Inquiry →</button>
           </form>
           <div id="formFeedback"></div>
         </div>
@@ -123,26 +136,18 @@
         <p><i class="fas fa-envelope"></i> info@samproperties.com</p>
       </div>
     </div>
-
-    
-      <div class="company-concern">
-    <div class="concern-divider"></div>
-    <div class="concern-content">
-      <p class="concern-text"><i class="fas fa-building"></i> NIRIBILLI is a concern of <strong>SAM Company</strong></p>
-      <a href="https://sambd.vercel.app" target="_blank" class="concern-link" rel="noopener noreferrer">
-        <i class="fas fa-external-link-alt"></i> Visit SAM Company Website →
-      </a>
+    <div class="company-concern">
+      <div class="concern-divider"></div>
+      <div class="concern-content">
+        <p class="concern-text"><i class="fas fa-building"></i> NIRIBILLI is a concern of <strong>SAM Company</strong></p>
+        <a href="https://sambd.vercel.app" target="_blank" class="concern-link" rel="noopener noreferrer">
+          <i class="fas fa-external-link-alt"></i> Visit SAM Company Website →
+        </a>
+      </div>
     </div>
-
-        
-  </div>
     <div class="footer-bottom">© 2025 SAM Properties — Luxury Real Estate. All Rights Reserved.</div>
   </footer>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
-
-
-
-  
 </body>
 </html>
