@@ -484,155 +484,133 @@ window.addEventListener('scroll', () => {
 
 
 
-// ========== AI PROPERTY ASSISTANT (FULLY FORGIVING) ==========
+// ========== AI PROPERTY ASSISTANT (WITH BUTTONS TO APPLY FILTERS) ==========
 (function() {
-  // ----- Helper: Normalize text (remove extra spaces, lowercase, trim) -----
+  // Helper: Normalize text
   function normalize(str) {
     return str.toLowerCase().replace(/[^\w\s]/g, '').trim().replace(/\s+/g, ' ');
   }
 
-  // ----- Common misspellings mapping -----
+  // Location aliases (typo‑friendly)
   const locationMap = {
     'gulshan': ['gulshan', 'gulson', 'gulshon', 'gulshn', 'gulsan', 'gulshaan'],
-    'banani': ['banani', 'banany', 'bananai', 'banani', 'bananii'],
+    'banani': ['banani', 'banany', 'bananai', 'bananii'],
     'baridhara': ['baridhara', 'baridara', 'baridhora', 'baridhar', 'baridharra'],
     'uttara': ['uttara', 'utara', 'uttora', 'utarra', 'uttarra'],
-    'dhanmondi': ['dhanmondi', 'dhanmondi', 'dhanmondy', 'dhanmondii', 'dhanmondi'],
-    'bashundhara': ['bashundhara', 'bashundara', 'bashundhora', 'bashundhar', 'bashundhara']
+    'dhanmondi': ['dhanmondi', 'dhanmondy', 'dhanmondii'],
+    'bashundhara': ['bashundhara', 'bashundara', 'bashundhora', 'bashundhar']
   };
-  // Build reverse lookup for quick matching
   const locationAlias = {};
-  for (const [canonical, aliases] of Object.entries(locationMap)) {
-    for (const alias of aliases) {
-      locationAlias[alias] = canonical;
-    }
+  for (const [canon, aliases] of Object.entries(locationMap)) {
+    for (const a of aliases) locationAlias[a] = canon;
   }
 
+  // Property type aliases
   const typeMap = {
     'apartment': ['apartment', 'apartments', 'flat', 'flats', 'apt', 'appartment', 'aprt'],
     'villa': ['villa', 'villas', 'vila', 'villla'],
-    'penthouse': ['penthouse', 'penthouse', 'penthous', 'pent house'],
+    'penthouse': ['penthouse', 'penthous', 'pent house'],
     'commercial': ['commercial', 'office', 'shop', 'store', 'comercial']
   };
   const typeAlias = {};
-  for (const [canonical, aliases] of Object.entries(typeMap)) {
-    for (const alias of aliases) {
-      typeAlias[alias] = canonical;
-    }
+  for (const [canon, aliases] of Object.entries(typeMap)) {
+    for (const a of aliases) typeAlias[a] = canon;
   }
 
-  // ----- Parse user query with fuzzy matching -----
-  function parseQuery(input, propertiesList) {
+  // Parse user query into filter parameters
+  function parseQueryToFilters(input, propertiesList) {
     const text = normalize(input);
-    let filtered = [...propertiesList];
+    let filters = {
+      location: null,
+      bedrooms: null,
+      priceMin: null,
+      priceMax: null,
+      type: null
+    };
     let explanation = '';
 
-    // 1. Location
-    let foundLocation = null;
+    // Location
     for (const word of text.split(' ')) {
-      if (locationAlias[word]) {
-        foundLocation = locationAlias[word];
-        break;
-      }
+      if (locationAlias[word]) { filters.location = locationAlias[word]; break; }
     }
-    // Also check if location appears as substring (e.g., "gulshan" inside "gulshans")
-    if (!foundLocation) {
-      for (const [canonical, aliases] of Object.entries(locationMap)) {
-        for (const alias of aliases) {
-          if (text.includes(alias)) {
-            foundLocation = canonical;
-            break;
-          }
+    if (!filters.location) {
+      for (const [canon, aliases] of Object.entries(locationMap)) {
+        for (const a of aliases) {
+          if (text.includes(a)) { filters.location = canon; break; }
         }
-        if (foundLocation) break;
+        if (filters.location) break;
       }
     }
-    if (foundLocation) {
-      filtered = filtered.filter(p => p.location === foundLocation);
-      const displayName = foundLocation.charAt(0).toUpperCase() + foundLocation.slice(1);
-      explanation += `📍 ${displayName}. `;
-    }
+    if (filters.location) explanation += `📍 ${filters.location.charAt(0).toUpperCase() + filters.location.slice(1)}. `;
 
-    // 2. Bedrooms
-    let bedrooms = null;
-    // Match patterns: "3 bed", "3 bedroom", "3 bhk", "3bhk", "3 beds"
+    // Bedrooms
     const bedMatch = text.match(/(\d+)\s*(?:bed|bhk|bedroom|bedrooms)/);
-    if (bedMatch) {
-      bedrooms = parseInt(bedMatch[1]);
-      if (bedrooms >= 5) {
-        filtered = filtered.filter(p => p.bedrooms >= 5);
-        explanation += `🛏️ ${bedrooms}+ bedrooms. `;
-      } else {
-        filtered = filtered.filter(p => p.bedrooms === bedrooms);
-        explanation += `🛏️ ${bedrooms} bedroom(s). `;
+    if (bedMatch) filters.bedrooms = parseInt(bedMatch[1]);
+    if (filters.bedrooms) explanation += `🛏️ ${filters.bedrooms}+ bedroom(s). `;
+
+    // Price
+    let under = text.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (under) { filters.priceMax = parseFloat(under[1]) * 1e7; explanation += `💰 Under ${under[1]} crore. `; }
+    let above = text.match(/(?:above|over|more than)\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (above) { filters.priceMin = parseFloat(above[1]) * 1e7; explanation += `💰 Above ${above[1]} crore. `; }
+    let between = text.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (between) {
+      filters.priceMin = parseFloat(between[1]) * 1e7;
+      filters.priceMax = parseFloat(between[2]) * 1e7;
+      explanation += `💰 Between ${between[1]} and ${between[2]} crore. `;
+    }
+    let less = text.match(/(?:less than|below|lower than)\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (less) { filters.priceMax = parseFloat(less[1]) * 1e7; explanation += `💰 Below ${less[1]} crore. `; }
+
+    // Type
+    for (const word of text.split(' ')) {
+      if (typeAlias[word]) { filters.type = typeAlias[word]; break; }
+    }
+    if (!filters.type) {
+      for (const [canon, aliases] of Object.entries(typeMap)) {
+        for (const a of aliases) {
+          if (text.includes(a)) { filters.type = canon; break; }
+        }
+        if (filters.type) break;
       }
     }
+    if (filters.type) explanation += `🏢 ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}. `;
 
-    // 3. Price
-    let priceMin = null, priceMax = null;
-    // "under X crore"
-    let underMatch = text.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (underMatch) {
-      priceMax = parseFloat(underMatch[1]) * 10000000;
-      explanation += `💰 Under ${underMatch[1]} crore. `;
-    }
-    // "above X crore" or "over X crore"
-    let aboveMatch = text.match(/(?:above|over|more than)\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (aboveMatch) {
-      priceMin = parseFloat(aboveMatch[1]) * 10000000;
-      explanation += `💰 Above ${aboveMatch[1]} crore. `;
-    }
-    // "between X and Y crore"
-    let betweenMatch = text.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (betweenMatch) {
-      priceMin = parseFloat(betweenMatch[1]) * 10000000;
-      priceMax = parseFloat(betweenMatch[2]) * 10000000;
-      explanation += `💰 Between ${betweenMatch[1]} and ${betweenMatch[2]} crore. `;
-    }
-    // "less than X crore"
-    let lessMatch = text.match(/(?:less than|below|lower than)\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (lessMatch) {
-      priceMax = parseFloat(lessMatch[1]) * 10000000;
-      explanation += `💰 Below ${lessMatch[1]} crore. `;
-    }
+    return { filters, explanation };
+  }
 
-    if (priceMin !== null || priceMax !== null) {
+  // Apply filters to the properties list to get matching count
+  function applyFilters(propertiesList, filters) {
+    let filtered = [...propertiesList];
+    if (filters.location) filtered = filtered.filter(p => p.location === filters.location);
+    if (filters.bedrooms) {
+      if (filters.bedrooms >= 5) filtered = filtered.filter(p => p.bedrooms >= 5);
+      else filtered = filtered.filter(p => p.bedrooms === filters.bedrooms);
+    }
+    if (filters.priceMin !== null || filters.priceMax !== null) {
       filtered = filtered.filter(p => {
-        if (priceMin !== null && p.price < priceMin) return false;
-        if (priceMax !== null && p.price > priceMax) return false;
+        if (filters.priceMin !== null && p.price < filters.priceMin) return false;
+        if (filters.priceMax !== null && p.price > filters.priceMax) return false;
         return true;
       });
     }
-
-    // 4. Property type
-    let foundType = null;
-    for (const word of text.split(' ')) {
-      if (typeAlias[word]) {
-        foundType = typeAlias[word];
-        break;
-      }
-    }
-    if (!foundType) {
-      for (const [canonical, aliases] of Object.entries(typeMap)) {
-        for (const alias of aliases) {
-          if (text.includes(alias)) {
-            foundType = canonical;
-            break;
-          }
-        }
-        if (foundType) break;
-      }
-    }
-    if (foundType) {
-      filtered = filtered.filter(p => p.type === foundType);
-      const typeDisplay = foundType.charAt(0).toUpperCase() + foundType.slice(1);
-      explanation += `🏢 ${typeDisplay}. `;
-    }
-
-    return { filtered, explanation };
+    if (filters.type) filtered = filtered.filter(p => p.type === filters.type);
+    return filtered;
   }
 
-  // ----- Main AI initialization -----
+  // Convert filter object into URL‑friendly format for properties.html
+  function saveFiltersToStorage(filters) {
+    const filtersToStore = {
+      location: filters.location || '',
+      bedrooms: filters.bedrooms ? filters.bedrooms.toString() : '',
+      priceMin: filters.priceMin !== null ? filters.priceMin.toString() : '',
+      priceMax: filters.priceMax !== null ? filters.priceMax.toString() : '',
+      type: filters.type || ''
+    };
+    sessionStorage.setItem('samPropertyFilters', JSON.stringify(filtersToStore));
+  }
+
+  // Main AI initialization
   function initAI(propertiesList) {
     const btn = document.getElementById('aiChatBtn');
     const widget = document.getElementById('aiChatWidget');
@@ -646,7 +624,6 @@ window.addEventListener('scroll', () => {
       return;
     }
 
-    // Open/close widget
     btn.addEventListener('click', () => widget.classList.toggle('open'));
     closeBtn.addEventListener('click', () => widget.classList.remove('open'));
 
@@ -658,34 +635,70 @@ window.addEventListener('scroll', () => {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    function addPropertySuggestion(property, filtersUsed) {
+      // Create a container for the property suggestion
+      const container = document.createElement('div');
+      container.style.marginBottom = '15px';
+      container.style.padding = '10px';
+      container.style.backgroundColor = '#1e1e1e';
+      container.style.borderRadius = '12px';
+      container.style.border = '1px solid rgba(212,175,55,0.3)';
+      
+      const details = document.createElement('div');
+      details.innerHTML = `🏠 <strong>${property.name}</strong><br>📍 ${property.locationDisplay} | ${property.priceText} | ${property.bedrooms} Beds | ${property.area}`;
+      details.style.marginBottom = '8px';
+      
+      const button = document.createElement('button');
+      button.textContent = '🔍 View similar properties →';
+      button.style.background = '#D4AF37';
+      button.style.border = 'none';
+      button.style.padding = '6px 12px';
+      button.style.borderRadius = '20px';
+      button.style.cursor = 'pointer';
+      button.style.color = '#0a0a0a';
+      button.style.fontWeight = 'bold';
+      button.style.fontSize = '12px';
+      
+      button.addEventListener('click', () => {
+        saveFiltersToStorage(filtersUsed);
+        window.location.href = 'properties.html';
+      });
+      
+      container.appendChild(details);
+      container.appendChild(button);
+      messagesContainer.appendChild(container);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
     function processQuery(query) {
       if (!query.trim()) return;
       addMessage(query, true);
       input.value = '';
 
-      // Greeting
       if (/^(hi|hello|hey|greetings|hola|sup)/i.test(query)) {
         addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
         return;
       }
 
-      const { filtered, explanation } = parseQuery(query, propertiesList);
+      const { filters, explanation } = parseQueryToFilters(query, propertiesList);
+      const matchedProperties = applyFilters(propertiesList, filters);
 
-      if (filtered.length === 0) {
+      if (matchedProperties.length === 0) {
         addMessage("😔 No properties match your criteria. Try different words or contact our team for help.");
       } else {
-        let reply = `✅ Found ${filtered.length} property(ies). ${explanation}<br><br>`;
-        const showCount = Math.min(filtered.length, 3);
-        reply += `Here ${showCount === 1 ? 'is' : 'are'} the first ${showCount} match${showCount > 1 ? 'es' : ''}:<br><br>`;
-        filtered.slice(0, showCount).forEach(p => {
-          reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
-        });
-        if (filtered.length > 3) {
-          reply += `✨ And ${filtered.length - 3} more. Use the filters on the Properties page to explore them all.`;
-        } else {
-          reply += `📞 Contact us to schedule a viewing or get more details.`;
-        }
+        let reply = `✅ Found ${matchedProperties.length} property(ies). ${explanation}<br><br>`;
         addMessage(reply);
+        
+        // Show up to 3 property cards with buttons
+        const showCount = Math.min(matchedProperties.length, 3);
+        for (let i = 0; i < showCount; i++) {
+          addPropertySuggestion(matchedProperties[i], filters);
+        }
+        if (matchedProperties.length > 3) {
+          addMessage(`✨ And ${matchedProperties.length - 3} more. Use the buttons above to see similar properties or refine your search.`);
+        } else {
+          addMessage(`📞 Contact us to schedule a viewing or get more details.`);
+        }
       }
     }
 
@@ -695,13 +708,13 @@ window.addEventListener('scroll', () => {
     });
   }
 
-  // Wait for the global `properties` array to exist
+  // Wait for properties array to exist
   let attempts = 0;
   const interval = setInterval(() => {
     if (typeof properties !== 'undefined' && properties.length > 0) {
       clearInterval(interval);
       initAI(properties);
-    } else if (attempts > 100) { // ~10 seconds
+    } else if (attempts > 100) {
       clearInterval(interval);
       console.warn('AI chat: properties array not found');
     }
