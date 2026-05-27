@@ -466,6 +466,65 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   renderFeaturedProperties();
+
+  // ========== RESTORE FILTERS FROM AI (if any) ==========
+  const savedFilters = sessionStorage.getItem('samPropertyFilters');
+  if (savedFilters) {
+    try {
+      const filters = JSON.parse(savedFilters);
+      if (filters.location && filters.location !== '') {
+        const locationSelect = document.getElementById('propertyLocation');
+        if (locationSelect) locationSelect.value = filters.location;
+      }
+      if (filters.bedrooms && filters.bedrooms !== '') {
+        const bedroomSelect = document.getElementById('propertyBedrooms');
+        if (bedroomSelect) bedroomSelect.value = filters.bedrooms;
+      }
+      if (filters.priceMin !== '' || filters.priceMax !== '') {
+        // Determine the price range option from the stored min/max
+        const priceSelect = document.getElementById('propertyPrice');
+        if (priceSelect) {
+          const min = filters.priceMin ? parseFloat(filters.priceMin) / 1e7 : null;
+          const max = filters.priceMax ? parseFloat(filters.priceMax) / 1e7 : null;
+          if (min !== null && max !== null) {
+            // Between X and Y
+            priceSelect.value = `${min}-${max}`;
+          } else if (max !== null && max < 2) {
+            priceSelect.value = '0-2';
+          } else if (max !== null && max >= 2 && max < 4) {
+            priceSelect.value = '2-4';
+          } else if (max !== null && max >= 4 && max < 6) {
+            priceSelect.value = '4-6';
+          } else if (max !== null && max >= 6 && max < 10) {
+            priceSelect.value = '6-10';
+          } else if (min !== null && min >= 10 && min < 15) {
+            priceSelect.value = '10-15';
+          } else if (min !== null && min >= 15) {
+            priceSelect.value = '15+';
+          } else if (max !== null && max >= 10 && max < 15) {
+            priceSelect.value = '10-15';
+          } else if (max !== null && max >= 15) {
+            priceSelect.value = '15+';
+          } else if (min !== null && min < 2) {
+            priceSelect.value = '0-2';
+          } else if (min !== null && min >= 2 && min < 4) {
+            priceSelect.value = '2-4';
+          } else if (min !== null && min >= 4 && min < 6) {
+            priceSelect.value = '4-6';
+          } else if (min !== null && min >= 6 && min < 10) {
+            priceSelect.value = '6-10';
+          }
+        }
+      }
+      if (filters.type && filters.type !== '') {
+        const typeSelect = document.getElementById('propertyType');
+        if (typeSelect) typeSelect.value = filters.type;
+      }
+      // Clear storage after applying so that next visit doesn't reapply
+      sessionStorage.removeItem('samPropertyFilters');
+    } catch(e) { console.warn('Error restoring AI filters', e); }
+  }
+  
   renderPropertiesGrid();
 });
 
