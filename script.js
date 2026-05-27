@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ========== ENHANCED CONTACT FORM HANDLER ==========
+   // ========== ENHANCED CONTACT FORM HANDLER ==========
   // Read URL parameters (property name & type) if coming from "Inquire Now"
   const urlParams = new URLSearchParams(window.location.search);
   const propertyName = urlParams.get('property');
@@ -424,19 +424,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const inquiryTypeSelect = document.getElementById('inquiryType');
   const propertyInterestSelect = document.getElementById('propertyInterest');
-  const sellExtraDiv = document.getElementById('sellExtraFields');
-  const sellPrice = document.getElementById('sellPrice');
-  const sellPropertyName = document.getElementById('sellPropertyName');
-  const sellArea = document.getElementById('sellArea');
-  const sellLocation = document.getElementById('sellLocation');
+  const buyExtraDiv = document.getElementById('buyExtraFields');   // changed id
+  const buyPrice = document.getElementById('buyPrice');
+  const buyPropertyName = document.getElementById('buyPropertyName');
+  const buyArea = document.getElementById('buyArea');
+  const buyLocation = document.getElementById('buyLocation');
 
-  // Pre‑fill if coming from property card
+  // Pre‑fill if coming from property card – now selects "Looking to Buy"
   if (propertyName && inquiryTypeSelect) {
-    inquiryTypeSelect.value = 'sell'; // "Looking to Sell"
-    // Pre‑fill the message field with property name
+    inquiryTypeSelect.value = 'buy';   // Changed from 'sell' to 'buy'
     const messageField = document.getElementById('message');
     if (messageField) {
-      messageField.value = `I am interested in selling my property: ${propertyName}`;
+      messageField.value = `I am interested in buying this property: ${propertyName}`;
     }
   }
   if (propertyType && propertyInterestSelect) {
@@ -449,29 +448,28 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mappedType) propertyInterestSelect.value = mappedType;
   }
 
-  // Show/hide extra fields based on inquiry type selection
-  function toggleSellExtraFields() {
-    if (inquiryTypeSelect && sellExtraDiv) {
-      if (inquiryTypeSelect.value === 'sell') {
-        sellExtraDiv.style.display = 'block';
-        // Make extra fields required
-        if (sellPrice) sellPrice.required = true;
-        if (sellPropertyName) sellPropertyName.required = true;
-        if (sellArea) sellArea.required = true;
-        if (sellLocation) sellLocation.required = true;
+  // Show/hide extra fields based on inquiry type (now shows for 'buy')
+  function toggleBuyExtraFields() {
+    if (inquiryTypeSelect && buyExtraDiv) {
+      if (inquiryTypeSelect.value === 'buy') {
+        buyExtraDiv.style.display = 'block';
+        if (buyPrice) buyPrice.required = true;
+        if (buyPropertyName) buyPropertyName.required = true;
+        if (buyArea) buyArea.required = true;
+        if (buyLocation) buyLocation.required = true;
       } else {
-        sellExtraDiv.style.display = 'none';
-        if (sellPrice) sellPrice.required = false;
-        if (sellPropertyName) sellPropertyName.required = false;
-        if (sellArea) sellArea.required = false;
-        if (sellLocation) sellLocation.required = false;
+        buyExtraDiv.style.display = 'none';
+        if (buyPrice) buyPrice.required = false;
+        if (buyPropertyName) buyPropertyName.required = false;
+        if (buyArea) buyArea.required = false;
+        if (buyLocation) buyLocation.required = false;
       }
     }
   }
 
   if (inquiryTypeSelect) {
-    inquiryTypeSelect.addEventListener('change', toggleSellExtraFields);
-    toggleSellExtraFields(); // initial check (will hide extra fields if not "sell")
+    inquiryTypeSelect.addEventListener('change', toggleBuyExtraFields);
+    toggleBuyExtraFields(); // initial check
   }
 
   const contactForm = document.getElementById('contactForm');
@@ -486,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const propertyInterest = propertyInterestSelect?.value;
       const message = document.getElementById('message')?.value.trim();
 
-      // 1. Main fields validation
+      // Main fields validation
       if (!fullName) { showFormFeedback('Please enter your full name.', 'error'); return; }
       if (!email) { showFormFeedback('Please enter your email address.', 'error'); return; }
       if (!email.includes('@') || !email.includes('.')) { showFormFeedback('Enter a valid email (e.g., name@domain.com).', 'error'); return; }
@@ -496,22 +494,22 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!propertyInterest) { showFormFeedback('Please select your interested property type.', 'error'); return; }
       if (!message) { showFormFeedback('Please write a message.', 'error'); return; }
 
-      // 2. Extra fields validation only if "Looking to Sell"
-      if (inquiryType === 'sell') {
-        if (!sellPrice?.value.trim()) { showFormFeedback('Expected price is required.', 'error'); return; }
-        const priceVal = parseFloat(sellPrice.value.trim());
+      // Extra fields validation only if "Looking to Buy"
+      if (inquiryType === 'buy') {
+        if (!buyPrice?.value.trim()) { showFormFeedback('Expected price is required.', 'error'); return; }
+        const priceVal = parseFloat(buyPrice.value.trim());
         if (isNaN(priceVal)) { showFormFeedback('Price must be a number (e.g., 5.2).', 'error'); return; }
-        if (!sellPropertyName?.value.trim()) { showFormFeedback('Exact property name is required.', 'error'); return; }
-        if (!sellArea?.value.trim()) { showFormFeedback('Area (sq ft) is required.', 'error'); return; }
-        const areaVal = parseFloat(sellArea.value.trim());
+        if (!buyPropertyName?.value.trim()) { showFormFeedback('Exact property name is required.', 'error'); return; }
+        if (!buyArea?.value.trim()) { showFormFeedback('Area (sq ft) is required.', 'error'); return; }
+        const areaVal = parseFloat(buyArea.value.trim());
         if (isNaN(areaVal)) { showFormFeedback('Area must be a number.', 'error'); return; }
-        if (!sellLocation?.value.trim()) { showFormFeedback('Location is required.', 'error'); return; }
+        if (!buyLocation?.value.trim()) { showFormFeedback('Location is required.', 'error'); return; }
       }
 
       // All valid
       showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent. We will contact you at ${email} within 24 hours.`, 'success');
       contactForm.reset();
-      if (sellExtraDiv) sellExtraDiv.style.display = 'none';
+      if (buyExtraDiv) buyExtraDiv.style.display = 'none';
       
       setTimeout(() => {
         const feedbackDiv = document.getElementById('formFeedback');
@@ -529,7 +527,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 5000);
     }
   }
-
   // ========== NEWSLETTER ==========
   const newsBtn = document.getElementById('newsBtn');
   if (newsBtn) {
