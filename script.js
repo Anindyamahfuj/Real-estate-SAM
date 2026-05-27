@@ -484,156 +484,226 @@ window.addEventListener('scroll', () => {
 
 
 
-// ========== AI PROPERTY ASSISTANT (FINAL WORKING) ==========
+// ========== AI PROPERTY ASSISTANT (FULLY FORGIVING) ==========
 (function() {
-  let aiInitialized = false;
+  // ----- Helper: Normalize text (remove extra spaces, lowercase, trim) -----
+  function normalize(str) {
+    return str.toLowerCase().replace(/[^\w\s]/g, '').trim().replace(/\s+/g, ' ');
+  }
 
+  // ----- Common misspellings mapping -----
+  const locationMap = {
+    'gulshan': ['gulshan', 'gulson', 'gulshon', 'gulshn', 'gulsan', 'gulshaan'],
+    'banani': ['banani', 'banany', 'bananai', 'banani', 'bananii'],
+    'baridhara': ['baridhara', 'baridara', 'baridhora', 'baridhar', 'baridharra'],
+    'uttara': ['uttara', 'utara', 'uttora', 'utarra', 'uttarra'],
+    'dhanmondi': ['dhanmondi', 'dhanmondi', 'dhanmondy', 'dhanmondii', 'dhanmondi'],
+    'bashundhara': ['bashundhara', 'bashundara', 'bashundhora', 'bashundhar', 'bashundhara']
+  };
+  // Build reverse lookup for quick matching
+  const locationAlias = {};
+  for (const [canonical, aliases] of Object.entries(locationMap)) {
+    for (const alias of aliases) {
+      locationAlias[alias] = canonical;
+    }
+  }
+
+  const typeMap = {
+    'apartment': ['apartment', 'apartments', 'flat', 'flats', 'apt', 'appartment', 'aprt'],
+    'villa': ['villa', 'villas', 'vila', 'villla'],
+    'penthouse': ['penthouse', 'penthouse', 'penthous', 'pent house'],
+    'commercial': ['commercial', 'office', 'shop', 'store', 'comercial']
+  };
+  const typeAlias = {};
+  for (const [canonical, aliases] of Object.entries(typeMap)) {
+    for (const alias of aliases) {
+      typeAlias[alias] = canonical;
+    }
+  }
+
+  // ----- Parse user query with fuzzy matching -----
+  function parseQuery(input, propertiesList) {
+    const text = normalize(input);
+    let filtered = [...propertiesList];
+    let explanation = '';
+
+    // 1. Location
+    let foundLocation = null;
+    for (const word of text.split(' ')) {
+      if (locationAlias[word]) {
+        foundLocation = locationAlias[word];
+        break;
+      }
+    }
+    // Also check if location appears as substring (e.g., "gulshan" inside "gulshans")
+    if (!foundLocation) {
+      for (const [canonical, aliases] of Object.entries(locationMap)) {
+        for (const alias of aliases) {
+          if (text.includes(alias)) {
+            foundLocation = canonical;
+            break;
+          }
+        }
+        if (foundLocation) break;
+      }
+    }
+    if (foundLocation) {
+      filtered = filtered.filter(p => p.location === foundLocation);
+      const displayName = foundLocation.charAt(0).toUpperCase() + foundLocation.slice(1);
+      explanation += `📍 ${displayName}. `;
+    }
+
+    // 2. Bedrooms
+    let bedrooms = null;
+    // Match patterns: "3 bed", "3 bedroom", "3 bhk", "3bhk", "3 beds"
+    const bedMatch = text.match(/(\d+)\s*(?:bed|bhk|bedroom|bedrooms)/);
+    if (bedMatch) {
+      bedrooms = parseInt(bedMatch[1]);
+      if (bedrooms >= 5) {
+        filtered = filtered.filter(p => p.bedrooms >= 5);
+        explanation += `🛏️ ${bedrooms}+ bedrooms. `;
+      } else {
+        filtered = filtered.filter(p => p.bedrooms === bedrooms);
+        explanation += `🛏️ ${bedrooms} bedroom(s). `;
+      }
+    }
+
+    // 3. Price
+    let priceMin = null, priceMax = null;
+    // "under X crore"
+    let underMatch = text.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (underMatch) {
+      priceMax = parseFloat(underMatch[1]) * 10000000;
+      explanation += `💰 Under ${underMatch[1]} crore. `;
+    }
+    // "above X crore" or "over X crore"
+    let aboveMatch = text.match(/(?:above|over|more than)\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (aboveMatch) {
+      priceMin = parseFloat(aboveMatch[1]) * 10000000;
+      explanation += `💰 Above ${aboveMatch[1]} crore. `;
+    }
+    // "between X and Y crore"
+    let betweenMatch = text.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (betweenMatch) {
+      priceMin = parseFloat(betweenMatch[1]) * 10000000;
+      priceMax = parseFloat(betweenMatch[2]) * 10000000;
+      explanation += `💰 Between ${betweenMatch[1]} and ${betweenMatch[2]} crore. `;
+    }
+    // "less than X crore"
+    let lessMatch = text.match(/(?:less than|below|lower than)\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (lessMatch) {
+      priceMax = parseFloat(lessMatch[1]) * 10000000;
+      explanation += `💰 Below ${lessMatch[1]} crore. `;
+    }
+
+    if (priceMin !== null || priceMax !== null) {
+      filtered = filtered.filter(p => {
+        if (priceMin !== null && p.price < priceMin) return false;
+        if (priceMax !== null && p.price > priceMax) return false;
+        return true;
+      });
+    }
+
+    // 4. Property type
+    let foundType = null;
+    for (const word of text.split(' ')) {
+      if (typeAlias[word]) {
+        foundType = typeAlias[word];
+        break;
+      }
+    }
+    if (!foundType) {
+      for (const [canonical, aliases] of Object.entries(typeMap)) {
+        for (const alias of aliases) {
+          if (text.includes(alias)) {
+            foundType = canonical;
+            break;
+          }
+        }
+        if (foundType) break;
+      }
+    }
+    if (foundType) {
+      filtered = filtered.filter(p => p.type === foundType);
+      const typeDisplay = foundType.charAt(0).toUpperCase() + foundType.slice(1);
+      explanation += `🏢 ${typeDisplay}. `;
+    }
+
+    return { filtered, explanation };
+  }
+
+  // ----- Main AI initialization -----
   function initAI(propertiesList) {
-    if (aiInitialized) return;
-    aiInitialized = true;
+    const btn = document.getElementById('aiChatBtn');
+    const widget = document.getElementById('aiChatWidget');
+    const closeBtn = document.getElementById('aiCloseChat');
+    const sendBtn = document.getElementById('aiSendBtn');
+    const input = document.getElementById('aiUserInput');
+    const messagesContainer = document.getElementById('aiChatMessages');
 
-    const aiChatBtn = document.getElementById('aiChatBtn');
-    const aiChatWidget = document.getElementById('aiChatWidget');
-    const aiCloseChat = document.getElementById('aiCloseChat');
-    const aiSendBtn = document.getElementById('aiSendBtn');
-    const aiUserInput = document.getElementById('aiUserInput');
-    const aiChatMessages = document.getElementById('aiChatMessages');
-
-    // If any element is missing, exit
-    if (!aiChatBtn || !aiChatWidget || !aiCloseChat || !aiSendBtn || !aiUserInput || !aiChatMessages) {
-      console.warn('AI chat elements missing from DOM');
+    if (!btn || !widget || !closeBtn || !sendBtn || !input || !messagesContainer) {
+      console.warn('AI chat: Missing DOM elements');
       return;
     }
 
     // Open/close widget
-    aiChatBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      aiChatWidget.classList.toggle('open');
-    });
-    aiCloseChat.addEventListener('click', () => {
-      aiChatWidget.classList.remove('open');
-    });
+    btn.addEventListener('click', () => widget.classList.toggle('open'));
+    closeBtn.addEventListener('click', () => widget.classList.remove('open'));
 
     function addMessage(text, isUser = false) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`;
       msgDiv.innerHTML = text;
-      aiChatMessages.appendChild(msgDiv);
-      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-    }
-
-    function locationDisplay(locId) {
-      const map = { gulshan:'Gulshan', banani:'Banani', baridhara:'Baridhara', uttara:'Uttara', dhanmondi:'Dhanmondi', bashundhara:'Bashundhara' };
-      return map[locId] || locId;
-    }
-
-    function parseQueryAndFilter(query) {
-      query = query.toLowerCase();
-      let filtered = [...propertiesList];
-      let explanation = '';
-
-      const locations = ['gulshan', 'banani', 'baridhara', 'uttara', 'dhanmondi', 'bashundhara'];
-      for (let loc of locations) {
-        if (query.includes(loc)) {
-          filtered = filtered.filter(p => p.location === loc);
-          explanation += `📍 Location: ${locationDisplay(loc)}. `;
-          break;
-        }
-      }
-
-      const bedMatch = query.match(/(\d+)\s*bed/);
-      if (bedMatch) {
-        const beds = parseInt(bedMatch[1]);
-        if (beds >= 5) filtered = filtered.filter(p => p.bedrooms >= 5);
-        else filtered = filtered.filter(p => p.bedrooms === beds);
-        explanation += `🛏️ ${beds}+ bedrooms. `;
-      }
-
-      // Price parsing (crore)
-      const underMatch = query.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
-      if (underMatch) {
-        const maxPrice = parseFloat(underMatch[1]) * 10000000;
-        filtered = filtered.filter(p => p.price < maxPrice);
-        explanation += `💰 Under ${underMatch[1]} crore. `;
-      }
-      const betweenMatch = query.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
-      if (betweenMatch) {
-        const minPrice = parseFloat(betweenMatch[1]) * 10000000;
-        const maxPrice = parseFloat(betweenMatch[2]) * 10000000;
-        filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
-        explanation += `💰 Between ${betweenMatch[1]} and ${betweenMatch[2]} crore. `;
-      }
-      const aboveMatch = query.match(/above\s*(\d+(?:\.\d+)?)\s*crore/);
-      if (aboveMatch) {
-        const minPrice = parseFloat(aboveMatch[1]) * 10000000;
-        filtered = filtered.filter(p => p.price >= minPrice);
-        explanation += `💰 Above ${aboveMatch[1]} crore. `;
-      }
-
-      if (query.includes('apartment') || query.includes('flat')) {
-        filtered = filtered.filter(p => p.type === 'apartment');
-        explanation += `🏢 Apartment. `;
-      } else if (query.includes('villa')) {
-        filtered = filtered.filter(p => p.type === 'villa');
-        explanation += `🏡 Villa. `;
-      } else if (query.includes('penthouse')) {
-        filtered = filtered.filter(p => p.type === 'penthouse');
-        explanation += `✨ Penthouse. `;
-      } else if (query.includes('commercial')) {
-        filtered = filtered.filter(p => p.type === 'commercial');
-        explanation += `🏢 Commercial space. `;
-      }
-
-      return { filtered, explanation };
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     function processQuery(query) {
       if (!query.trim()) return;
       addMessage(query, true);
-      aiUserInput.value = '';
+      input.value = '';
 
-      if (query.match(/^(hi|hello|hey|greetings)/i)) {
+      // Greeting
+      if (/^(hi|hello|hey|greetings|hola|sup)/i.test(query)) {
         addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
         return;
       }
 
-      const { filtered, explanation } = parseQueryAndFilter(query);
+      const { filtered, explanation } = parseQuery(query, propertiesList);
 
       if (filtered.length === 0) {
-        addMessage("😔 No properties match your criteria. Try different keywords or contact our team.");
+        addMessage("😔 No properties match your criteria. Try different words or contact our team for help.");
       } else {
         let reply = `✅ Found ${filtered.length} property(ies). ${explanation}<br><br>`;
-        if (filtered.length <= 3) {
-          filtered.forEach(p => {
-            reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
-          });
-          reply += `📞 Contact us for more details or to schedule a viewing.`;
+        const showCount = Math.min(filtered.length, 3);
+        reply += `Here ${showCount === 1 ? 'is' : 'are'} the first ${showCount} match${showCount > 1 ? 'es' : ''}:<br><br>`;
+        filtered.slice(0, showCount).forEach(p => {
+          reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
+        });
+        if (filtered.length > 3) {
+          reply += `✨ And ${filtered.length - 3} more. Use the filters on the Properties page to explore them all.`;
         } else {
-          reply += `Here are the first 3 matches:<br><br>`;
-          filtered.slice(0, 3).forEach(p => {
-            reply += `🏠 <strong>${p.name}</strong><br>📍 ${p.locationDisplay} | ${p.priceText} | ${p.bedrooms} Beds | ${p.area}<br><br>`;
-          });
-          reply += `✨ And ${filtered.length - 3} more. Use filters on the Properties page.`;
+          reply += `📞 Contact us to schedule a viewing or get more details.`;
         }
         addMessage(reply);
       }
     }
 
-    aiSendBtn.addEventListener('click', () => processQuery(aiUserInput.value));
-    aiUserInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') processQuery(aiUserInput.value);
+    sendBtn.addEventListener('click', () => processQuery(input.value));
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') processQuery(input.value);
     });
   }
 
-  // Wait for the global `properties` array to be defined (polling)
+  // Wait for the global `properties` array to exist
   let attempts = 0;
   const interval = setInterval(() => {
     if (typeof properties !== 'undefined' && properties.length > 0) {
       clearInterval(interval);
       initAI(properties);
-    } else if (attempts > 50) {
+    } else if (attempts > 100) { // ~10 seconds
       clearInterval(interval);
-      console.warn('AI could not find properties array');
+      console.warn('AI chat: properties array not found');
     }
     attempts++;
   }, 100);
