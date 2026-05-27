@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   AOS.init({ duration: 1000, once: true, offset: 100 });
 
-  // ========== 100+ REAL PROPERTIES (NOW 101+ TOTAL) ==========
+  // ========== 100+ REAL PROPERTIES (YOUR EXISTING ARRAY) ==========
   const properties = [
     // ----- GULSHAN (existing) -----
     { name: "Gulshan Lake View Apartment", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 18500000, priceText: "1.85 Crore", bedrooms: 2, area: "1850 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
@@ -120,9 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: "Baridhara Sky Gardens", location: "baridhara", locationDisplay: "Baridhara", type: "penthouse", price: 128000000, priceText: "12.8 Crore", bedrooms: 5, area: "5900 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" }
   ];
 
-  console.log(`Total properties loaded: ${properties.length}`); // Should be 101+
+  console.log(`Total properties loaded: ${properties.length}`);
 
-  // ========== HERO SLIDER (unchanged) ==========
+  // ========== HERO SLIDER ==========
   const slides = document.querySelectorAll('.slide');
   const prevBtn = document.querySelector('.slider-prev');
   const nextBtn = document.querySelector('.slider-next');
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const statsSection = document.querySelector('.stats-section');
   if (statsSection) observer.observe(statsSection);
 
-  // ========== FEATURED PROPERTIES ==========
+  // ========== FEATURED PROPERTIES (with URL parameters) ==========
   function renderFeaturedProperties() {
     const featuredGrid = document.getElementById('featuredGrid');
     if (featuredGrid) {
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="property-location"><i class="fas fa-map-pin"></i> ${prop.locationDisplay}</div>
             <div class="property-price">৳ ${prop.priceText}</div>
             <p>${prop.bedrooms ? `${prop.bedrooms} Beds | ` : 'Commercial Space | '}${prop.area}</p>
-            <a href="contact.html" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
+            <a href="contact.html?property=${encodeURIComponent(prop.name)}&type=${prop.type}" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
           </div>
         </div>
       `).join('');
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="property-location"><i class="fas fa-map-pin"></i> ${prop.locationDisplay}</div>
             <div class="property-price">৳ ${prop.priceText}</div>
             <p>${prop.bedrooms ? `${prop.bedrooms} Beds | ` : 'Commercial Space | '}${prop.area}</p>
-            <a href="contact.html" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
+            <a href="contact.html?property=${encodeURIComponent(prop.name)}&type=${prop.type}" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
           </div>
         </div>
       `).join('');
@@ -416,23 +416,103 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ========== CONTACT FORM HANDLER ==========
+  // ========== ENHANCED CONTACT FORM HANDLER ==========
+  // Read URL parameters (property name & type) if coming from "Inquire Now"
+  const urlParams = new URLSearchParams(window.location.search);
+  const propertyName = urlParams.get('property');
+  const propertyType = urlParams.get('type');
+
+  const inquiryTypeSelect = document.getElementById('inquiryType');
+  const propertyInterestSelect = document.getElementById('propertyInterest');
+  const sellExtraDiv = document.getElementById('sellExtraFields');
+  const sellPrice = document.getElementById('sellPrice');
+  const sellPropertyName = document.getElementById('sellPropertyName');
+  const sellArea = document.getElementById('sellArea');
+  const sellLocation = document.getElementById('sellLocation');
+
+  // Pre‑fill if coming from property card
+  if (propertyName && inquiryTypeSelect) {
+    inquiryTypeSelect.value = 'sell'; // "Looking to Sell"
+    // Pre‑fill the message field with property name
+    const messageField = document.getElementById('message');
+    if (messageField) {
+      messageField.value = `I am interested in selling my property: ${propertyName}`;
+    }
+  }
+  if (propertyType && propertyInterestSelect) {
+    let mappedType = propertyType;
+    if (propertyType === 'apartment') mappedType = 'apartment';
+    else if (propertyType === 'villa') mappedType = 'villa';
+    else if (propertyType === 'penthouse') mappedType = 'penthouse';
+    else if (propertyType === 'commercial') mappedType = 'commercial';
+    else mappedType = '';
+    if (mappedType) propertyInterestSelect.value = mappedType;
+  }
+
+  // Show/hide extra fields based on inquiry type selection
+  function toggleSellExtraFields() {
+    if (inquiryTypeSelect && sellExtraDiv) {
+      if (inquiryTypeSelect.value === 'sell') {
+        sellExtraDiv.style.display = 'block';
+        // Make extra fields required
+        if (sellPrice) sellPrice.required = true;
+        if (sellPropertyName) sellPropertyName.required = true;
+        if (sellArea) sellArea.required = true;
+        if (sellLocation) sellLocation.required = true;
+      } else {
+        sellExtraDiv.style.display = 'none';
+        if (sellPrice) sellPrice.required = false;
+        if (sellPropertyName) sellPropertyName.required = false;
+        if (sellArea) sellArea.required = false;
+        if (sellLocation) sellLocation.required = false;
+      }
+    }
+  }
+
+  if (inquiryTypeSelect) {
+    inquiryTypeSelect.addEventListener('change', toggleSellExtraFields);
+    toggleSellExtraFields(); // initial check (will hide extra fields if not "sell")
+  }
+
   const contactForm = document.getElementById('contactForm');
   if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
       e.preventDefault();
+      
       const fullName = document.getElementById('fullName')?.value.trim();
       const email = document.getElementById('emailAddress')?.value.trim();
-      if (!fullName) {
-        showFormFeedback('Please enter your full name.', 'error');
-        return;
+      const phone = document.getElementById('phoneNumber')?.value.trim();
+      const inquiryType = inquiryTypeSelect?.value;
+      const propertyInterest = propertyInterestSelect?.value;
+      const message = document.getElementById('message')?.value.trim();
+
+      // 1. Main fields validation
+      if (!fullName) { showFormFeedback('Please enter your full name.', 'error'); return; }
+      if (!email) { showFormFeedback('Please enter your email address.', 'error'); return; }
+      if (!email.includes('@') || !email.includes('.')) { showFormFeedback('Enter a valid email (e.g., name@domain.com).', 'error'); return; }
+      if (!phone) { showFormFeedback('Phone number is required.', 'error'); return; }
+      if (!/^\d+$/.test(phone)) { showFormFeedback('Phone number must contain only digits.', 'error'); return; }
+      if (!inquiryType) { showFormFeedback('Please select an inquiry type.', 'error'); return; }
+      if (!propertyInterest) { showFormFeedback('Please select your interested property type.', 'error'); return; }
+      if (!message) { showFormFeedback('Please write a message.', 'error'); return; }
+
+      // 2. Extra fields validation only if "Looking to Sell"
+      if (inquiryType === 'sell') {
+        if (!sellPrice?.value.trim()) { showFormFeedback('Expected price is required.', 'error'); return; }
+        const priceVal = parseFloat(sellPrice.value.trim());
+        if (isNaN(priceVal)) { showFormFeedback('Price must be a number (e.g., 5.2).', 'error'); return; }
+        if (!sellPropertyName?.value.trim()) { showFormFeedback('Exact property name is required.', 'error'); return; }
+        if (!sellArea?.value.trim()) { showFormFeedback('Area (sq ft) is required.', 'error'); return; }
+        const areaVal = parseFloat(sellArea.value.trim());
+        if (isNaN(areaVal)) { showFormFeedback('Area must be a number.', 'error'); return; }
+        if (!sellLocation?.value.trim()) { showFormFeedback('Location is required.', 'error'); return; }
       }
-      if (!email || !email.includes('@')) {
-        showFormFeedback('Please enter a valid email address.', 'error');
-        return;
-      }
-      showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent. Our specialist will contact you at ${email} within 24 hours.`, 'success');
+
+      // All valid
+      showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent. We will contact you at ${email} within 24 hours.`, 'success');
       contactForm.reset();
+      if (sellExtraDiv) sellExtraDiv.style.display = 'none';
+      
       setTimeout(() => {
         const feedbackDiv = document.getElementById('formFeedback');
         if (feedbackDiv) feedbackDiv.innerHTML = '';
@@ -466,72 +546,11 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   renderFeaturedProperties();
-
-  // ========== RESTORE FILTERS FROM AI (if any) ==========
-  const savedFilters = sessionStorage.getItem('samPropertyFilters');
-  if (savedFilters) {
-    try {
-      const filters = JSON.parse(savedFilters);
-      if (filters.location && filters.location !== '') {
-        const locationSelect = document.getElementById('propertyLocation');
-        if (locationSelect) locationSelect.value = filters.location;
-      }
-      if (filters.bedrooms && filters.bedrooms !== '') {
-        const bedroomSelect = document.getElementById('propertyBedrooms');
-        if (bedroomSelect) bedroomSelect.value = filters.bedrooms;
-      }
-      if (filters.priceMin !== '' || filters.priceMax !== '') {
-        // Determine the price range option from the stored min/max
-        const priceSelect = document.getElementById('propertyPrice');
-        if (priceSelect) {
-          const min = filters.priceMin ? parseFloat(filters.priceMin) / 1e7 : null;
-          const max = filters.priceMax ? parseFloat(filters.priceMax) / 1e7 : null;
-          if (min !== null && max !== null) {
-            // Between X and Y
-            priceSelect.value = `${min}-${max}`;
-          } else if (max !== null && max < 2) {
-            priceSelect.value = '0-2';
-          } else if (max !== null && max >= 2 && max < 4) {
-            priceSelect.value = '2-4';
-          } else if (max !== null && max >= 4 && max < 6) {
-            priceSelect.value = '4-6';
-          } else if (max !== null && max >= 6 && max < 10) {
-            priceSelect.value = '6-10';
-          } else if (min !== null && min >= 10 && min < 15) {
-            priceSelect.value = '10-15';
-          } else if (min !== null && min >= 15) {
-            priceSelect.value = '15+';
-          } else if (max !== null && max >= 10 && max < 15) {
-            priceSelect.value = '10-15';
-          } else if (max !== null && max >= 15) {
-            priceSelect.value = '15+';
-          } else if (min !== null && min < 2) {
-            priceSelect.value = '0-2';
-          } else if (min !== null && min >= 2 && min < 4) {
-            priceSelect.value = '2-4';
-          } else if (min !== null && min >= 4 && min < 6) {
-            priceSelect.value = '4-6';
-          } else if (min !== null && min >= 6 && min < 10) {
-            priceSelect.value = '6-10';
-          }
-        }
-      }
-      if (filters.type && filters.type !== '') {
-        const typeSelect = document.getElementById('propertyType');
-        if (typeSelect) typeSelect.value = filters.type;
-      }
-      // Clear storage after applying so that next visit doesn't reapply
-      sessionStorage.removeItem('samPropertyFilters');
-    } catch(e) { console.warn('Error restoring AI filters', e); }
-  }
-  
   renderPropertiesGrid();
 });
 
-
 window.addEventListener('scroll', () => {
   const navbar = document.querySelector('.navbar');
-
   if(window.scrollY > 50){
     navbar.style.background = 'rgba(5,5,5,0.96)';
     navbar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.35)';
@@ -540,243 +559,3 @@ window.addEventListener('scroll', () => {
     navbar.style.boxShadow = 'none';
   }
 });
-
-
-
-// ========== AI PROPERTY ASSISTANT (WITH BUTTONS TO APPLY FILTERS) ==========
-(function() {
-  // Helper: Normalize text
-  function normalize(str) {
-    return str.toLowerCase().replace(/[^\w\s]/g, '').trim().replace(/\s+/g, ' ');
-  }
-
-  // Location aliases (typo‑friendly)
-  const locationMap = {
-    'gulshan': ['gulshan', 'gulson', 'gulshon', 'gulshn', 'gulsan', 'gulshaan'],
-    'banani': ['banani', 'banany', 'bananai', 'bananii'],
-    'baridhara': ['baridhara', 'baridara', 'baridhora', 'baridhar', 'baridharra'],
-    'uttara': ['uttara', 'utara', 'uttora', 'utarra', 'uttarra'],
-    'dhanmondi': ['dhanmondi', 'dhanmondy', 'dhanmondii'],
-    'bashundhara': ['bashundhara', 'bashundara', 'bashundhora', 'bashundhar']
-  };
-  const locationAlias = {};
-  for (const [canon, aliases] of Object.entries(locationMap)) {
-    for (const a of aliases) locationAlias[a] = canon;
-  }
-
-  // Property type aliases
-  const typeMap = {
-    'apartment': ['apartment', 'apartments', 'flat', 'flats', 'apt', 'appartment', 'aprt'],
-    'villa': ['villa', 'villas', 'vila', 'villla'],
-    'penthouse': ['penthouse', 'penthous', 'pent house'],
-    'commercial': ['commercial', 'office', 'shop', 'store', 'comercial']
-  };
-  const typeAlias = {};
-  for (const [canon, aliases] of Object.entries(typeMap)) {
-    for (const a of aliases) typeAlias[a] = canon;
-  }
-
-  // Parse user query into filter parameters
-  function parseQueryToFilters(input, propertiesList) {
-    const text = normalize(input);
-    let filters = {
-      location: null,
-      bedrooms: null,
-      priceMin: null,
-      priceMax: null,
-      type: null
-    };
-    let explanation = '';
-
-    // Location
-    for (const word of text.split(' ')) {
-      if (locationAlias[word]) { filters.location = locationAlias[word]; break; }
-    }
-    if (!filters.location) {
-      for (const [canon, aliases] of Object.entries(locationMap)) {
-        for (const a of aliases) {
-          if (text.includes(a)) { filters.location = canon; break; }
-        }
-        if (filters.location) break;
-      }
-    }
-    if (filters.location) explanation += `📍 ${filters.location.charAt(0).toUpperCase() + filters.location.slice(1)}. `;
-
-    // Bedrooms
-    const bedMatch = text.match(/(\d+)\s*(?:bed|bhk|bedroom|bedrooms)/);
-    if (bedMatch) filters.bedrooms = parseInt(bedMatch[1]);
-    if (filters.bedrooms) explanation += `🛏️ ${filters.bedrooms}+ bedroom(s). `;
-
-    // Price
-    let under = text.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (under) { filters.priceMax = parseFloat(under[1]) * 1e7; explanation += `💰 Under ${under[1]} crore. `; }
-    let above = text.match(/(?:above|over|more than)\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (above) { filters.priceMin = parseFloat(above[1]) * 1e7; explanation += `💰 Above ${above[1]} crore. `; }
-    let between = text.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (between) {
-      filters.priceMin = parseFloat(between[1]) * 1e7;
-      filters.priceMax = parseFloat(between[2]) * 1e7;
-      explanation += `💰 Between ${between[1]} and ${between[2]} crore. `;
-    }
-    let less = text.match(/(?:less than|below|lower than)\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (less) { filters.priceMax = parseFloat(less[1]) * 1e7; explanation += `💰 Below ${less[1]} crore. `; }
-
-    // Type
-    for (const word of text.split(' ')) {
-      if (typeAlias[word]) { filters.type = typeAlias[word]; break; }
-    }
-    if (!filters.type) {
-      for (const [canon, aliases] of Object.entries(typeMap)) {
-        for (const a of aliases) {
-          if (text.includes(a)) { filters.type = canon; break; }
-        }
-        if (filters.type) break;
-      }
-    }
-    if (filters.type) explanation += `🏢 ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}. `;
-
-    return { filters, explanation };
-  }
-
-  // Apply filters to the properties list to get matching count
-  function applyFilters(propertiesList, filters) {
-    let filtered = [...propertiesList];
-    if (filters.location) filtered = filtered.filter(p => p.location === filters.location);
-    if (filters.bedrooms) {
-      if (filters.bedrooms >= 5) filtered = filtered.filter(p => p.bedrooms >= 5);
-      else filtered = filtered.filter(p => p.bedrooms === filters.bedrooms);
-    }
-    if (filters.priceMin !== null || filters.priceMax !== null) {
-      filtered = filtered.filter(p => {
-        if (filters.priceMin !== null && p.price < filters.priceMin) return false;
-        if (filters.priceMax !== null && p.price > filters.priceMax) return false;
-        return true;
-      });
-    }
-    if (filters.type) filtered = filtered.filter(p => p.type === filters.type);
-    return filtered;
-  }
-
-  // Convert filter object into URL‑friendly format for properties.html
-  function saveFiltersToStorage(filters) {
-    const filtersToStore = {
-      location: filters.location || '',
-      bedrooms: filters.bedrooms ? filters.bedrooms.toString() : '',
-      priceMin: filters.priceMin !== null ? filters.priceMin.toString() : '',
-      priceMax: filters.priceMax !== null ? filters.priceMax.toString() : '',
-      type: filters.type || ''
-    };
-    sessionStorage.setItem('samPropertyFilters', JSON.stringify(filtersToStore));
-  }
-
-  // Main AI initialization
-  function initAI(propertiesList) {
-    const btn = document.getElementById('aiChatBtn');
-    const widget = document.getElementById('aiChatWidget');
-    const closeBtn = document.getElementById('aiCloseChat');
-    const sendBtn = document.getElementById('aiSendBtn');
-    const input = document.getElementById('aiUserInput');
-    const messagesContainer = document.getElementById('aiChatMessages');
-
-    if (!btn || !widget || !closeBtn || !sendBtn || !input || !messagesContainer) {
-      console.warn('AI chat: Missing DOM elements');
-      return;
-    }
-
-    btn.addEventListener('click', () => widget.classList.toggle('open'));
-    closeBtn.addEventListener('click', () => widget.classList.remove('open'));
-
-    function addMessage(text, isUser = false) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`;
-      msgDiv.innerHTML = text;
-      messagesContainer.appendChild(msgDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function addPropertySuggestion(property, filtersUsed) {
-      // Create a container for the property suggestion
-      const container = document.createElement('div');
-      container.style.marginBottom = '15px';
-      container.style.padding = '10px';
-      container.style.backgroundColor = '#1e1e1e';
-      container.style.borderRadius = '12px';
-      container.style.border = '1px solid rgba(212,175,55,0.3)';
-      
-      const details = document.createElement('div');
-      details.innerHTML = `🏠 <strong>${property.name}</strong><br>📍 ${property.locationDisplay} | ${property.priceText} | ${property.bedrooms} Beds | ${property.area}`;
-      details.style.marginBottom = '8px';
-      
-      const button = document.createElement('button');
-      button.textContent = '🔍 View similar properties →';
-      button.style.background = '#D4AF37';
-      button.style.border = 'none';
-      button.style.padding = '6px 12px';
-      button.style.borderRadius = '20px';
-      button.style.cursor = 'pointer';
-      button.style.color = '#0a0a0a';
-      button.style.fontWeight = 'bold';
-      button.style.fontSize = '12px';
-      
-      button.addEventListener('click', () => {
-        saveFiltersToStorage(filtersUsed);
-        window.location.href = 'properties.html';
-      });
-      
-      container.appendChild(details);
-      container.appendChild(button);
-      messagesContainer.appendChild(container);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function processQuery(query) {
-      if (!query.trim()) return;
-      addMessage(query, true);
-      input.value = '';
-
-      if (/^(hi|hello|hey|greetings|hola|sup)/i.test(query)) {
-        addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
-        return;
-      }
-
-      const { filters, explanation } = parseQueryToFilters(query, propertiesList);
-      const matchedProperties = applyFilters(propertiesList, filters);
-
-      if (matchedProperties.length === 0) {
-        addMessage("😔 No properties match your criteria. Try different words or contact our team for help.");
-      } else {
-        let reply = `✅ Found ${matchedProperties.length} property(ies). ${explanation}<br><br>`;
-        addMessage(reply);
-        
-        // Show up to 3 property cards with buttons
-        const showCount = Math.min(matchedProperties.length, 3);
-        for (let i = 0; i < showCount; i++) {
-          addPropertySuggestion(matchedProperties[i], filters);
-        }
-        if (matchedProperties.length > 3) {
-          addMessage(`✨ And ${matchedProperties.length - 3} more. Use the buttons above to see similar properties or refine your search.`);
-        } else {
-          addMessage(`📞 Contact us to schedule a viewing or get more details.`);
-        }
-      }
-    }
-
-    sendBtn.addEventListener('click', () => processQuery(input.value));
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') processQuery(input.value);
-    });
-  }
-
-  // Wait for properties array to exist
-  let attempts = 0;
-  const interval = setInterval(() => {
-    if (typeof properties !== 'undefined' && properties.length > 0) {
-      clearInterval(interval);
-      initAI(properties);
-    } else if (attempts > 100) {
-      clearInterval(interval);
-      console.warn('AI chat: properties array not found');
-    }
-    attempts++;
-  }, 100);
-})();
