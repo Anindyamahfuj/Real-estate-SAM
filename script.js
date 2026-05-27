@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   AOS.init({ duration: 1000, once: true, offset: 100 });
 
-  // ========== 100+ REAL PROPERTIES (YOUR EXISTING ARRAY) ==========
+  // ========== YOUR FULL PROPERTIES ARRAY (same as you have) ==========
   const properties = [
     // ----- GULSHAN (existing) -----
     { name: "Gulshan Lake View Apartment", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 18500000, priceText: "1.85 Crore", bedrooms: 2, area: "1850 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: "Gulshan Park Residences", location: "gulshan", locationDisplay: "Gulshan", type: "apartment", price: 22000000, priceText: "2.2 Crore", bedrooms: 2, area: "1800 sq ft", image: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Banani Lake Front Villa", location: "banani", locationDisplay: "Banani", type: "villa", price: 185000000, priceText: "18.5 Crore", bedrooms: 6, area: "7200 sq ft", image: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" },
     { name: "Baridhara Sky Gardens", location: "baridhara", locationDisplay: "Baridhara", type: "penthouse", price: 128000000, priceText: "12.8 Crore", bedrooms: 5, area: "5900 sq ft", image: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" }
-  ];
+ ];
 
   console.log(`Total properties loaded: ${properties.length}`);
 
-  // ========== HERO SLIDER ==========
+  // ========== HERO SLIDER (unchanged) ==========
   const slides = document.querySelectorAll('.slide');
   const prevBtn = document.querySelector('.slider-prev');
   const nextBtn = document.querySelector('.slider-next');
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const statsSection = document.querySelector('.stats-section');
   if (statsSection) observer.observe(statsSection);
 
-  // ========== FEATURED PROPERTIES (with URL parameters) ==========
+  // ========== FEATURED PROPERTIES (with correct Inquire Now link) ==========
   function renderFeaturedProperties() {
     const featuredGrid = document.getElementById('featuredGrid');
     if (featuredGrid) {
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // ========== PROPERTIES PAGE FILTERS ==========
+  // ========== PROPERTIES PAGE FILTERS AND GRID ==========
   let currentPage = 1;
   const itemsPerPage = 9;
 
@@ -416,23 +416,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-   // ========== ENHANCED CONTACT FORM HANDLER ==========
-  // Read URL parameters (property name & type) if coming from "Inquire Now"
+  // ========== ENHANCED CONTACT FORM HANDLER (Looking to Buy) ==========
   const urlParams = new URLSearchParams(window.location.search);
   const propertyName = urlParams.get('property');
   const propertyType = urlParams.get('type');
 
   const inquiryTypeSelect = document.getElementById('inquiryType');
   const propertyInterestSelect = document.getElementById('propertyInterest');
-  const buyExtraDiv = document.getElementById('buyExtraFields');   // changed id
+  const buyExtraDiv = document.getElementById('buyExtraFields');
   const buyPrice = document.getElementById('buyPrice');
   const buyPropertyName = document.getElementById('buyPropertyName');
   const buyArea = document.getElementById('buyArea');
   const buyLocation = document.getElementById('buyLocation');
 
-  // Pre‑fill if coming from property card – now selects "Looking to Buy"
   if (propertyName && inquiryTypeSelect) {
-    inquiryTypeSelect.value = 'buy';   // Changed from 'sell' to 'buy'
+    inquiryTypeSelect.value = 'buy';
     const messageField = document.getElementById('message');
     if (messageField) {
       messageField.value = `I am interested in buying this property: ${propertyName}`;
@@ -448,7 +446,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mappedType) propertyInterestSelect.value = mappedType;
   }
 
-  // Show/hide extra fields based on inquiry type (now shows for 'buy')
   function toggleBuyExtraFields() {
     if (inquiryTypeSelect && buyExtraDiv) {
       if (inquiryTypeSelect.value === 'buy') {
@@ -469,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (inquiryTypeSelect) {
     inquiryTypeSelect.addEventListener('change', toggleBuyExtraFields);
-    toggleBuyExtraFields(); // initial check
+    toggleBuyExtraFields();
   }
 
   const contactForm = document.getElementById('contactForm');
@@ -484,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const propertyInterest = propertyInterestSelect?.value;
       const message = document.getElementById('message')?.value.trim();
 
-      // Main fields validation
       if (!fullName) { showFormFeedback('Please enter your full name.', 'error'); return; }
       if (!email) { showFormFeedback('Please enter your email address.', 'error'); return; }
       if (!email.includes('@') || !email.includes('.')) { showFormFeedback('Enter a valid email (e.g., name@domain.com).', 'error'); return; }
@@ -494,7 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!propertyInterest) { showFormFeedback('Please select your interested property type.', 'error'); return; }
       if (!message) { showFormFeedback('Please write a message.', 'error'); return; }
 
-      // Extra fields validation only if "Looking to Buy"
       if (inquiryType === 'buy') {
         if (!buyPrice?.value.trim()) { showFormFeedback('Expected price is required.', 'error'); return; }
         const priceVal = parseFloat(buyPrice.value.trim());
@@ -506,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!buyLocation?.value.trim()) { showFormFeedback('Location is required.', 'error'); return; }
       }
 
-      // All valid
       showFormFeedback(`✨ Thank you ${fullName}! Your inquiry has been sent. We will contact you at ${email} within 24 hours.`, 'success');
       contactForm.reset();
       if (buyExtraDiv) buyExtraDiv.style.display = 'none';
@@ -527,6 +521,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 5000);
     }
   }
+
   // ========== NEWSLETTER ==========
   const newsBtn = document.getElementById('newsBtn');
   if (newsBtn) {
