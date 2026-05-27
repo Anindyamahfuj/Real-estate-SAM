@@ -76,26 +76,26 @@
                 <option value="other">Other</option>
               </select>
             </div>
-            <select id="propertyInterest" required style="margin-bottom:20px; width:100%; padding:14px 18px; background:#1a1a1a; border:1px solid rgba(212,175,55,0.2); border-radius:28px; color:white;">
-              <option value="">Interested Property Type</option>
-              <option value="apartment">Luxury Apartment</option>
-              <option value="villa">Private Villa</option>
-              <option value="penthouse">Penthouse</option>
-              <option value="commercial">Commercial Space</option>
-              <option value="land">Land/Plot</option>
-            </select>
+            <select id="inquiryType" required>
+  <option value="">Select Inquiry Type</option>
+  <option value="buy">Looking to Buy</option>
+  <option value="sell">Looking to Sell</option>
+  <option value="invest">Investment Advisory</option>
+  <option value="rent">Property Rental</option>
+  <option value="other">Other</option>
+</select>
 
-            <!-- Extra fields for "Looking to Sell" – hidden by default -->
-            <div id="sellExtraFields" style="display: none;">
-              <div class="form-row">
-                <input type="text" id="sellPrice" placeholder="Expected Price (in Crore, e.g. 5.2)">
-                <input type="text" id="sellPropertyName" placeholder="Exact Property Name">
-              </div>
-              <div class="form-row">
-                <input type="text" id="sellArea" placeholder="Area (sq ft)">
-                <input type="text" id="sellLocation" placeholder="Location (e.g. Gulshan, Banani)">
-              </div>
-            </div>
+<!-- Extra fields for "Looking to Buy" – hidden by default -->
+<div id="buyExtraFields" style="display: none;">
+  <div class="form-row">
+    <input type="text" id="buyPrice" placeholder="Expected Price (in Crore, e.g. 5.2)">
+    <input type="text" id="buyPropertyName" placeholder="Exact Property Name">
+  </div>
+  <div class="form-row">
+    <input type="text" id="buyArea" placeholder="Area (sq ft)">
+    <input type="text" id="buyLocation" placeholder="Location (e.g. Gulshan, Banani)">
+  </div>
+</div>
 
             <textarea id="message" rows="5" placeholder="Your Message (Tell us about your requirements)" required></textarea>
             <button type="submit" class="btn-primary-full"><i class="fas fa-paper-plane"></i> Send Inquiry →</button>
