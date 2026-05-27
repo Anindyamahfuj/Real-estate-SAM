@@ -361,18 +361,17 @@ document.addEventListener('DOMContentLoaded', function() {
   if (searchInput) searchInput.addEventListener('input', () => { currentPage = 1; renderPropertiesGrid(); });
 
   // ========== GALLERY (unchanged) ==========
-  const galleryItems = [
-    { category: "exterior", url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "interior", url: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "exterior", url: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "interior", url: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "amenities", url: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "exterior", url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "interior", url: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "amenities", url: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" },
-    { category: "exterior", url: "https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" }
-  ];
-
+ const galleryItems = [
+  { category: "exterior", url: "https://media.istockphoto.com/id/2175972607/photo/modern-luxury-home-with-geometric-driveway-and-sunset-sky.jpg?s=612x612&w=0&k=20&c=0pvJ_frDStQGywjOptq9XmyEQgVIxfH3Yg7MbYIfIjI=" },
+  { category: "interior", url: "https://dlifeinteriors.com/wp-content/uploads/2024/12/Living-and-kitchen-design-for-studio-apartment.jpg" },
+  { category: "exterior", url: "https://t4.ftcdn.net/jpg/04/05/09/41/360_F_405094135_YGTjfUW6LFHwCHjBNe9ogNGXKp4D2WPQ.jpg" },
+  { category: "interior", url: "https://design-authority.com/wp-content/uploads/2021/09/Modern-Luxury-Interior-Design-by-Elicyon.jpg" },
+  { category: "amenities", url: "https://images.squarespace-cdn.com/content/v1/589a3e1a414fb58b9eca1eed/262a63ed-96ca-443b-8940-b23398d3b146/luxury-amenities-pandemic-1.jpg" },
+  { category: "exterior", url: "https://t4.ftcdn.net/jpg/03/16/87/65/360_F_316876592_HCfokg4ZdE2o9mhxolxqBPBKNn3W2x49.jpg" },
+  { category: "interior", url: "https://intdesigners.com/wp-content/uploads/2024/04/Luxury-Home-Interior-Design.webp" },
+  { category: "amenities", url: "https://businessnes.com/wp-content/uploads/2025/10/Top-100-Luxury-Apartment-Amenities-List.webp" },
+  { category: "exterior", url: "https://media.istockphoto.com/id/1211174516/photo/beautiful-large-luxury-home-exterior-on-bright-sunny-day-with-green-grass-and-blue-sky.jpg?s=612x612&w=0&k=20&c=XASAYWGXM6Z6Ha6mCT-YDkGtuG0ejFWRB5utlkEEriI=" }
+];
   function renderGallery(filter = 'all') {
     const galleryGrid = document.getElementById('galleryGrid');
     if (!galleryGrid) return;
