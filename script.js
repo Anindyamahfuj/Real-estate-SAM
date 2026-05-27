@@ -210,23 +210,23 @@ document.addEventListener('DOMContentLoaded', function() {
   if (statsSection) observer.observe(statsSection);
 
   // ========== FEATURED PROPERTIES (with correct inquire link) ==========
-  function renderFeaturedProperties() {
-    const featuredGrid = document.getElementById('featuredGrid');
-    if (featuredGrid) {
-      featuredGrid.innerHTML = properties.slice(0, 6).map(prop => `
-        <div class="property-card">
-          <img src="${prop.image}" alt="${prop.name}" class="property-img">
-          <div class="property-info">
-            <h3>${prop.name}</h3>
-            <div class="property-location"><i class="fas fa-map-pin"></i> ${prop.locationDisplay}</div>
-            <div class="property-price">৳ ${prop.priceText}</div>
-            <p>${prop.bedrooms ? `${prop.bedrooms} Beds | ` : 'Commercial Space | '}${prop.area}</p>
-            <a href="contact.html?property=${encodeURIComponent(prop.name)}&type=${prop.type}" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
-          </div>
+function renderFeaturedProperties() {
+  const featuredGrid = document.getElementById('featuredGrid');
+  if (featuredGrid) {
+    featuredGrid.innerHTML = properties.slice(0, 6).map(prop => `
+      <div class="property-card">
+        <img src="${prop.image}" alt="${prop.name}" class="property-img">
+        <div class="property-info">
+          <h3>${prop.name}</h3>
+          <div class="property-location"><i class="fas fa-map-pin"></i> ${prop.locationDisplay}</div>
+          <div class="property-price">৳ ${prop.priceText}</div>
+          <p>${prop.bedrooms ? `${prop.bedrooms} Beds | ` : 'Commercial Space | '}${prop.area}</p>
+          <a href="contact.html?property=${encodeURIComponent(prop.name)}&type=${prop.type}" class="btn-luxury" style="margin-top:16px; display:inline-block;">Inquire →</a>
         </div>
-      `).join('');
-    }
+      </div>
+    `).join('');
   }
+}
 
   // ========== PROPERTIES PAGE FILTERS ==========
   let currentPage = 1;
