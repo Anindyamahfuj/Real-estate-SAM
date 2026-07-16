@@ -1098,34 +1098,70 @@ console.log('🚀 25X Better features loaded successfully!');
 // 50X BETTER – BUSINESS & ENGAGEMENT FEATURES
 // ============================================
 
-// 1. LEAD CAPTURE POPUP (Shows after 5 seconds)
-setTimeout(() => {
-    const popup = document.getElementById('leadPopup');
-    if (popup && !localStorage.getItem('leadCaptured')) {
-        popup.classList.add('show');
-    }
-}, 5000);
+// ============================================
+// LEAD CAPTURE POPUP (FIXED – Button Triggered)
+// ============================================
 
-document.getElementById('leadClose')?.addEventListener('click', function() {
-    document.getElementById('leadPopup').classList.remove('show');
-});
-document.getElementById('leadPopup')?.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('show');
-});
+const leadPopup = document.getElementById('leadPopup');
+const leadTrigger = document.getElementById('leadTrigger');
+const leadClose = document.getElementById('leadClose');
 
-document.getElementById('leadForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name = document.getElementById('leadName').value.trim();
-    const email = document.getElementById('leadEmail').value.trim();
-    if (name && email) {
+// Show popup ONLY when button is clicked
+if (leadTrigger && leadPopup) {
+    leadTrigger.addEventListener('click', function() {
+        // Check if user already submitted
+        if (localStorage.getItem('leadCaptured') === 'true') {
+            showToast('✅ You are already subscribed!', 'success');
+            return;
+        }
+        leadPopup.classList.add('show');
+    });
+}
+
+// Close popup when X is clicked
+if (leadClose) {
+    leadClose.addEventListener('click', function() {
+        leadPopup.classList.remove('show');
+    });
+}
+
+// Close popup when clicking outside
+if (leadPopup) {
+    leadPopup.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+        }
+    });
+}
+
+// Handle form submission
+const leadForm = document.getElementById('leadForm');
+if (leadForm) {
+    leadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('leadName').value.trim();
+        const email = document.getElementById('leadEmail').value.trim();
+        
+        if (!name || !email) {
+            showToast('⚠️ Please fill in all fields.', 'error');
+            return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+            showToast('⚠️ Please enter a valid email.', 'error');
+            return;
+        }
+        
+        // Save to localStorage
         localStorage.setItem('leadCaptured', 'true');
         localStorage.setItem('leadName', name);
         localStorage.setItem('leadEmail', email);
-        this.innerHTML = '<p style="color:#D4AF37;font-size:1.2rem;">✅ Thank you! We\'ll keep you updated.</p>';
-        document.getElementById('leadPopup').classList.remove('show');
+        
+        // Show success
+        this.innerHTML = '<p style="color:#D4AF37;font-size:1.2rem;">✅ Thank you! We\'ll keep you updated with early property alerts.</p>';
+        leadPopup.classList.remove('show');
         showToast('🎉 Welcome! You\'ll get early property alerts.', 'success');
-    }
-});
+    });
+}
 
 // 2. WHATSAPP FLOATING BUTTON (Already in HTML)
 
