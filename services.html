@@ -204,35 +204,40 @@
   </div>
     
     <div class="footer-bottom">© 2025 SAM Properties — Luxury Real Estate. All Rights Reserved.</div>
+
+<!-- ===== AI PROPERTY ASSISTANT SECTION ===== -->
+<section class="ai-assistant-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <span class="section-tag">✦ AI Assistant ✦</span>
+      <h2>Find Your Dream Property Instantly</h2>
+      <p>Ask our AI about properties by location, price, bedrooms, or type. It understands plain English!</p>
+    </div>
+    <div class="ai-assistant-wrapper" data-aos="fade-up">
+      <div class="ai-chat-container">
+        <div class="ai-chat-messages" id="aiChatMessages">
+          <div class="ai-message ai-bot">
+            👋 Hi! I'm SAM AI. Ask me anything about our properties.<br><br>
+            <strong>Examples:</strong><br>
+            • "Show 3BHK villas in Gulshan under 10 crore"<br>
+            • "Find apartments in Banani between 2 and 4 crore"<br>
+            • "2 bedroom flat in Uttara above 1.5 crore"
+          </div>
+        </div>
+        <div class="ai-chat-input">
+          <input type="text" id="aiUserInput" placeholder="Type your question here...">
+          <button id="aiSendBtn"><i class="fas fa-paper-plane"></i> Ask AI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    
   </footer>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
 
-  <!-- AI Property Assistant Widget -->
-<div class="ai-chat-btn" id="aiChatBtn">
-  <i class="fas fa-robot"></i>
-  <span class="ai-pulse"></span>
-</div>
 
-<div class="ai-chat-widget" id="aiChatWidget">
-  <div class="ai-chat-header">
-    <i class="fas fa-robot"></i> SAM AI Assistant
-    <button id="aiCloseChat"><i class="fas fa-times"></i></button>
-  </div>
-  <div class="ai-chat-messages" id="aiChatMessages">
-    <div class="ai-message ai-bot">
-      👋 Hi! I'm SAM AI. Ask me anything about our properties.<br>
-      <strong>Examples:</strong><br>
-      • "Show 3BHK villas in Gulshan under 10 crore"<br>
-      • "Find apartments in Banani between 2 and 4 crore"<br>
-      • "2 bedroom flat in Uttara above 1.5 crore"
-    </div>
-  </div>
-  <div class="ai-chat-input">
-    <input type="text" id="aiUserInput" placeholder="Ask me about properties...">
-    <button id="aiSendBtn"><i class="fas fa-paper-plane"></i></button>
-  </div>
-</div>
 
   
 </body>
