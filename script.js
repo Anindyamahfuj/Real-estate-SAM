@@ -760,3 +760,335 @@ function showFormFeedback(msg, type) {
 }
 
 
+// ============================================
+// 25X BETTER – PREMIUM ADDITIONS (ADD ONLY)
+// ============================================
+
+// 1. PAGE LOADER
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        const loader = document.getElementById('pageLoader');
+        if (loader) loader.classList.add('hidden');
+    }, 800);
+});
+
+// 2. SCROLL PROGRESS BAR & BACK TO TOP
+window.addEventListener('scroll', function() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    const progressBar = document.getElementById('scrollProgress');
+    if (progressBar) progressBar.style.width = progress + '%';
+    
+    const backBtn = document.getElementById('backToTop');
+    if (backBtn) {
+        if (scrollTop > 300) {
+            backBtn.classList.add('show');
+        } else {
+            backBtn.classList.remove('show');
+        }
+    }
+});
+
+// 3. BACK TO TOP
+const backBtn = document.getElementById('backToTop');
+if (backBtn) {
+    backBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// 4. TOAST NOTIFICATIONS
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.remove();
+    }, 4000);
+}
+
+// 5. THEME TOGGLE (Dark/Light Mode)
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('light-mode');
+        if (document.body.classList.contains('light-mode')) {
+            localStorage.setItem('theme', 'light');
+            this.innerHTML = '<i class="fas fa-sun"></i>';
+            showToast('🌞 Light mode activated', 'info');
+        } else {
+            localStorage.setItem('theme', 'dark');
+            this.innerHTML = '<i class="fas fa-moon"></i>';
+            showToast('🌙 Dark mode activated', 'info');
+        }
+    });
+}
+
+// 6. COOKIE CONSENT
+const cookieConsent = document.getElementById('cookieConsent');
+const acceptCookies = document.getElementById('acceptCookies');
+if (cookieConsent && acceptCookies) {
+    if (!localStorage.getItem('cookiesAccepted')) {
+        cookieConsent.classList.add('show');
+    }
+    acceptCookies.addEventListener('click', function() {
+        localStorage.setItem('cookiesAccepted', 'true');
+        cookieConsent.classList.remove('show');
+    });
+}
+
+// 7. WISHLIST FUNCTIONALITY
+function toggleWishlist(propertyName, button) {
+    let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    const index = wishlist.indexOf(propertyName);
+    if (index > -1) {
+        wishlist.splice(index, 1);
+        if (button) button.classList.remove('liked');
+        showToast('❌ Removed from wishlist', 'warning');
+    } else {
+        wishlist.push(propertyName);
+        if (button) button.classList.add('liked');
+        showToast('❤️ Added to wishlist!', 'success');
+    }
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+}
+
+// 8. COMPARE FUNCTIONALITY
+let compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+
+function updateCompareBar() {
+    const bar = document.getElementById('compareBar');
+    const items = document.getElementById('compareItems');
+    if (!bar || !items) return;
+    if (compareList.length > 0) {
+        bar.classList.add('show');
+        items.innerHTML = compareList.map((name, i) => `
+            <div class="compare-item">
+                ${name}
+                <span class="remove-compare" data-index="${i}">&times;</span>
+            </div>
+        `).join('');
+        document.querySelectorAll('.remove-compare').forEach(el => {
+            el.addEventListener('click', function() {
+                compareList.splice(parseInt(this.dataset.index), 1);
+                localStorage.setItem('compareList', JSON.stringify(compareList));
+                updateCompareBar();
+                showToast('Removed from compare', 'info');
+            });
+        });
+    } else {
+        bar.classList.remove('show');
+    }
+}
+
+const clearCompare = document.getElementById('clearCompare');
+if (clearCompare) {
+    clearCompare.addEventListener('click', function() {
+        compareList = [];
+        localStorage.setItem('compareList', JSON.stringify(compareList));
+        updateCompareBar();
+        showToast('🧹 Compare list cleared', 'info');
+    });
+}
+
+const compareBtn = document.getElementById('compareBtn');
+if (compareBtn) {
+    compareBtn.addEventListener('click', function() {
+        if (compareList.length < 2) {
+            showToast('⚠️ Select at least 2 properties to compare', 'error');
+            return;
+        }
+        showToast(`📊 Comparing ${compareList.length} properties`, 'success');
+        localStorage.setItem('compareList', JSON.stringify(compareList));
+        window.location.href = 'properties.html?compare=true';
+    });
+}
+updateCompareBar();
+
+// 9. FULLSCREEN IMAGE VIEW
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.property-img')) {
+        const img = e.target.closest('.property-img');
+        const fullscreen = document.getElementById('fullscreenView');
+        const fullImg = document.getElementById('fullscreenImg');
+        if (fullscreen && fullImg) {
+            fullImg.src = img.src;
+            fullscreen.classList.add('active');
+        }
+    }
+});
+const closeFs = document.querySelector('.close-fs');
+if (closeFs) {
+    closeFs.addEventListener('click', function() {
+        document.getElementById('fullscreenView').classList.remove('active');
+    });
+}
+const fullscreenView = document.getElementById('fullscreenView');
+if (fullscreenView) {
+    fullscreenView.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+}
+
+// 10. HAMBURGER MENU
+const navContainer = document.querySelector('.nav-container');
+const navLinks = document.querySelector('.nav-links');
+if (navContainer && navLinks) {
+    let hamburger = document.querySelector('.hamburger');
+    if (!hamburger) {
+        hamburger = document.createElement('button');
+        hamburger.className = 'hamburger';
+        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        navContainer.insertBefore(hamburger, navLinks);
+        hamburger.addEventListener('click', function() {
+            navLinks.classList.toggle('open');
+        });
+    }
+}
+
+// 11. AUTO-SAVE CONTACT FORM
+const contactFormInputs = document.querySelectorAll('#contactForm input, #contactForm textarea, #contactForm select');
+if (contactFormInputs.length > 0) {
+    contactFormInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const data = {};
+            contactFormInputs.forEach(el => {
+                data[el.id] = el.value;
+            });
+            localStorage.setItem('contactFormData', JSON.stringify(data));
+        });
+    });
+    const savedData = localStorage.getItem('contactFormData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        contactFormInputs.forEach(el => {
+            if (data[el.id]) el.value = data[el.id];
+        });
+    }
+}
+
+// 12. FILTER CHIPS (Display active filters on properties page)
+function updateFilterChips() {
+    const container = document.querySelector('.filter-chips-container');
+    if (!container) return;
+    let chips = container.querySelector('.filter-chips');
+    if (!chips) {
+        chips = document.createElement('div');
+        chips.className = 'filter-chips';
+        container.appendChild(chips);
+    }
+    chips.innerHTML = '';
+    const filters = {
+        location: document.getElementById('propertyLocation')?.value,
+        type: document.getElementById('propertyType')?.value,
+        price: document.getElementById('propertyPrice')?.value,
+        bedrooms: document.getElementById('propertyBedrooms')?.value
+    };
+    const labels = {
+        location: '📍 ' + (filters.location ? filters.location.charAt(0).toUpperCase() + filters.location.slice(1) : ''),
+        type: '🏢 ' + (filters.type ? filters.type.charAt(0).toUpperCase() + filters.type.slice(1) : ''),
+        price: '💰 ' + (filters.price ? filters.price.replace('-', ' - ') + ' Crore' : ''),
+        bedrooms: '🛏️ ' + (filters.bedrooms ? filters.bedrooms + '+ Beds' : '')
+    };
+    let hasFilters = false;
+    Object.keys(filters).forEach(key => {
+        if (filters[key] && filters[key] !== 'all') {
+            hasFilters = true;
+            const chip = document.createElement('span');
+            chip.className = 'filter-chip';
+            chip.innerHTML = `${labels[key]} <span class="remove-chip" data-filter="${key}">&times;</span>`;
+            chips.appendChild(chip);
+        }
+    });
+    if (!hasFilters) {
+        chips.innerHTML = '<span style="color:#666;font-size:13px;">No active filters</span>';
+    }
+    document.querySelectorAll('.remove-chip').forEach(el => {
+        el.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            const map = {
+                'location': 'propertyLocation',
+                'type': 'propertyType',
+                'price': 'propertyPrice',
+                'bedrooms': 'propertyBedrooms'
+            };
+            const select = document.getElementById(map[filter]);
+            if (select) {
+                select.value = 'all';
+                const event = new Event('change');
+                select.dispatchEvent(event);
+                updateFilterChips();
+                showToast('Filter removed', 'info');
+            }
+        });
+    });
+}
+// Call on filter change
+document.querySelectorAll('#propertyType, #propertyLocation, #propertyPrice, #propertyBedrooms').forEach(el => {
+    el.addEventListener('change', updateFilterChips);
+});
+// Call on page load
+setTimeout(updateFilterChips, 500);
+
+// 13. PROPERTY VIEW COUNTER
+function trackPropertyView(propertyName) {
+    let views = JSON.parse(localStorage.getItem('propertyViews') || '{}');
+    views[propertyName] = (views[propertyName] || 0) + 1;
+    localStorage.setItem('propertyViews', JSON.stringify(views));
+}
+document.addEventListener('click', function(e) {
+    const card = e.target.closest('.property-card');
+    if (card) {
+        const name = card.querySelector('h3')?.textContent;
+        if (name) trackPropertyView(name);
+    }
+});
+
+// 14. PRINT PROPERTY DETAILS
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('share-btn') && e.target.classList.contains('print')) {
+        const card = e.target.closest('.property-card');
+        if (card) {
+            const clone = card.cloneNode(true);
+            const win = window.open('', '_blank');
+            if (win) {
+                win.document.write('<html><head><title>Property Details</title>');
+                win.document.write('<style>body{font-family: Arial; padding:40px; color:#333;} .property-card{border:1px solid #ddd;padding:20px;border-radius:12px;max-width:500px;margin:auto;} h3{color:#D4AF37;} .property-img{max-width:100%;border-radius:8px;} .btn-luxury{display:none;} .share-buttons{display:none;} .wishlist-btn{display:none;} .compare-checkbox{display:none;}</style>');
+                win.document.write('</head><body>');
+                win.document.write(clone.innerHTML);
+                win.document.write('</body></html>');
+                win.document.close();
+                win.print();
+            }
+        }
+    }
+});
+
+// 15. TYPING EFFECT ON HERO
+const heroHeading = document.querySelector('.hero-content h1');
+if (heroHeading) {
+    const originalText = heroHeading.textContent;
+    const words = originalText.split(' ');
+    let index = 0;
+    heroHeading.innerHTML = '';
+    const typingInterval = setInterval(() => {
+        if (index < words.length) {
+            heroHeading.innerHTML += words[index] + ' ';
+            index++;
+        } else {
+            clearInterval(typingInterval);
+            heroHeading.innerHTML = originalText;
+        }
+    }, 200);
+}
+
+console.log('🚀 25X Better features loaded successfully!');
