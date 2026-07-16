@@ -2084,3 +2084,23 @@ body.light-mode .ai-bot {
     cursor: pointer;
 }
 
+.hamburger {
+    display: none;
+    font-size: 28px;
+    color: #D4AF37;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+@media (max-width: 768px) {
+    .hamburger { display: block; }
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 20px 0;
+        gap: 15px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-container { flex-wrap: wrap; }
+}
