@@ -384,6 +384,78 @@
     display: flex !important;
 }
 </style>
+
+
+<script>
+// ===== LEAD POPUP JAVASCRIPT =====
+const leadTrigger = document.getElementById('leadTrigger');
+const leadPopup = document.getElementById('leadPopup');
+const leadClose = document.getElementById('leadClose');
+
+if (leadTrigger && leadPopup) {
+    leadTrigger.addEventListener('click', function() {
+        if (localStorage.getItem('leadCaptured') === 'true') {
+            showToast('✅ You are already subscribed!', 'success');
+            return;
+        }
+        leadPopup.classList.add('show');
+    });
+}
+
+if (leadClose) {
+    leadClose.addEventListener('click', function() {
+        leadPopup.classList.remove('show');
+    });
+}
+
+if (leadPopup) {
+    leadPopup.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+        }
+    });
+}
+
+const leadForm = document.getElementById('leadForm');
+if (leadForm) {
+    leadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('leadName').value.trim();
+        const email = document.getElementById('leadEmail').value.trim();
+        
+        if (!name || !email) {
+            alert('Please fill in all fields.');
+            return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+            alert('Please enter a valid email.');
+            return;
+        }
+        
+        localStorage.setItem('leadCaptured', 'true');
+        localStorage.setItem('leadName', name);
+        localStorage.setItem('leadEmail', email);
+        
+        this.innerHTML = '<p style="color:#D4AF37;font-size:1.2rem;">✅ Thank you! We\'ll keep you updated.</p>';
+        leadPopup.classList.remove('show');
+        alert('🎉 Welcome! You\'ll get early property alerts.');
+    });
+}
+
+// Toast function (if not already defined)
+function showToast(msg, type) {
+    const container = document.getElementById('toastContainer');
+    if (container) {
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        toast.textContent = msg;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    } else {
+        alert(msg);
+    }
+}
+</script>
   
 </body>
 </html>
