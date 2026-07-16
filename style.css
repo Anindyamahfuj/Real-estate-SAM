@@ -2118,3 +2118,467 @@ body.light-mode .ai-bot {
     .nav-links.open { display: flex; }
     .nav-container { flex-wrap: wrap; }
 }
+
+
+/* ============================================
+   50X BETTER – BUSINESS & ENGAGEMENT FEATURES
+   ============================================ */
+
+/* 1. LEAD CAPTURE POPUP */
+.lead-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 999999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.lead-popup.show { display: flex; }
+.lead-popup-content {
+    background: #1a1a1a;
+    border: 2px solid #D4AF37;
+    border-radius: 24px;
+    padding: 50px 40px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    animation: popIn 0.5s ease;
+}
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.lead-popup-content .lead-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+.lead-popup-content h2 {
+    color: #D4AF37;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+.lead-popup-content p {
+    color: #ccc;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+.lead-popup-content input {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 40px;
+    border: 1px solid rgba(212,175,55,0.3);
+    background: #111;
+    color: white;
+    font-family: inherit;
+}
+.lead-popup-content .btn-primary {
+    width: 100%;
+    background: #D4AF37;
+    border: none;
+    padding: 14px;
+    border-radius: 40px;
+    font-weight: 700;
+    color: #0a0a0a;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.lead-popup-content .btn-primary:hover {
+    background: #c4a02e;
+    transform: scale(1.02);
+}
+.lead-popup-content small {
+    color: #666;
+    font-size: 0.75rem;
+    display: block;
+    margin-top: 12px;
+}
+.lead-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* 2. WHATSAPP FLOATING BUTTON */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    background: #25d366;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    transition: 0.3s;
+    font-size: 14px;
+}
+.whatsapp-float i {
+    font-size: 24px;
+}
+.whatsapp-float:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(37,211,102,0.5);
+}
+.whatsapp-float .whatsapp-text {
+    display: inline-block;
+}
+@media (max-width: 500px) {
+    .whatsapp-float .whatsapp-text { display: none; }
+    .whatsapp-float { padding: 12px 16px; border-radius: 50%; }
+}
+
+/* 3. PROPERTY VIDEO TOUR */
+.property-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-top: 12px;
+}
+.property-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+
+/* 4. MORTGAGE CALCULATOR */
+.mortgage-calculator {
+    background: #111;
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px 0;
+}
+.mortgage-calculator h3 {
+    color: #D4AF37;
+    margin-bottom: 20px;
+}
+.mortgage-calculator .calc-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+.mortgage-calculator .calc-row input {
+    flex: 1;
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 30px;
+    color: white;
+}
+.mortgage-calculator .calc-result {
+    background: #1a1a1a;
+    padding: 15px 20px;
+    border-radius: 16px;
+    margin-top: 15px;
+    border-left: 4px solid #D4AF37;
+}
+.mortgage-calculator .calc-result .amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #D4AF37;
+}
+
+/* 5. FEATURED BADGE */
+.featured-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #D4AF37;
+    color: #0a0a0a;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    z-index: 5;
+    letter-spacing: 1px;
+}
+
+/* 6. PROPERTY STATUS */
+.property-status {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+.property-status.available { background: #2e7d32; color: #a5d6a7; }
+.property-status.pending { background: #e65100; color: #ffcc80; }
+.property-status.sold { background: #c62828; color: #ef9a9a; }
+
+/* 7. RATING STARS */
+.property-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+.property-rating .stars {
+    color: #D4AF37;
+    letter-spacing: 2px;
+}
+.property-rating .score {
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* 8. AGENT PROFILE */
+.agent-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 16px;
+    margin-top: 15px;
+}
+.agent-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #D4AF37;
+}
+.agent-profile .agent-info h4 {
+    color: white;
+    margin: 0;
+    font-size: 14px;
+}
+.agent-profile .agent-info p {
+    color: #aaa;
+    font-size: 12px;
+    margin: 0;
+}
+.agent-profile .agent-info .agent-contact {
+    color: #D4AF37;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+/* 9. SIMILAR PROPERTIES */
+.similar-properties {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(212,175,55,0.1);
+}
+.similar-properties h4 {
+    color: #D4AF37;
+    margin-bottom: 15px;
+}
+.similar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+.similar-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.similar-card:hover { transform: translateY(-3px); border-color: #D4AF37; }
+.similar-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+.similar-card .similar-info {
+    padding: 10px 12px;
+}
+.similar-card .similar-info h5 {
+    color: white;
+    font-size: 13px;
+    margin: 0;
+}
+.similar-card .similar-info p {
+    color: #aaa;
+    font-size: 12px;
+    margin: 4px 0 0;
+}
+
+/* 10. TESTIMONIALS WITH PHOTOS */
+.testimonial-card {
+    background: #111;
+    border: 1px solid rgba(212,175,55,0.1);
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+}
+.testimonial-card img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #D4AF37;
+    margin-bottom: 15px;
+}
+.testimonial-card .testimonial-text {
+    color: #ddd;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.testimonial-card .testimonial-author {
+    color: #D4AF37;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+/* 11. BLOG PREVIEW */
+.blog-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+.blog-card {
+    background: #111;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(212,175,55,0.1);
+    transition: 0.3s;
+}
+.blog-card:hover { transform: translateY(-5px); border-color: #D4AF37; }
+.blog-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+.blog-card .blog-content {
+    padding: 18px;
+}
+.blog-card .blog-content .blog-date {
+    color: #666;
+    font-size: 11px;
+}
+.blog-card .blog-content h4 {
+    color: white;
+    margin: 8px 0 10px;
+    font-size: 16px;
+}
+.blog-card .blog-content p {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.blog-card .blog-content .read-more {
+    color: #D4AF37;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* 12. NEIGHBORHOOD INFO */
+.neighborhood-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+.neighborhood-item {
+    background: #1a1a1a;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+}
+.neighborhood-item i {
+    color: #D4AF37;
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+.neighborhood-item span {
+    color: #aaa;
+    font-size: 12px;
+    display: block;
+}
+
+/* 13. EMAIL ALERT */
+.alert-signup {
+    background: #111;
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+.alert-signup input {
+    flex: 1;
+    padding: 12px 18px;
+    background: #1a1a1a;
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 30px;
+    color: white;
+    min-width: 180px;
+}
+.alert-signup button {
+    background: #D4AF37;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    color: #0a0a0a;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.alert-signup button:hover { background: #c4a02e; }
+
+/* 14. PROPERTY MAP VIEW */
+.property-map {
+    height: 300px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+.property-map iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* 15. VIRTUAL STAGING TOGGLE */
+.staging-toggle {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+.staging-toggle button {
+    padding: 6px 18px;
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 20px;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.staging-toggle button.active {
+    background: #D4AF37;
+    color: #0a0a0a;
+    border-color: #D4AF37;
+}
