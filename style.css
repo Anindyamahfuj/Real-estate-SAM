@@ -2582,3 +2582,11 @@ body.light-mode .ai-bot {
     color: #0a0a0a;
     border-color: #D4AF37;
 }
+
+
+#leadTrigger {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+}
