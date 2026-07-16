@@ -556,264 +556,7 @@ function showFormFeedback(msg, type) {
 }
 
 
-// ========== AI PROPERTY ASSISTANT (BRAND NEW) ==========
-(function() {
-  // Helper: Normalize text (remove extra spaces, lowercase, trim)
-  function normalize(str) {
-    return str.toLowerCase().replace(/[^\w\s]/g, '').trim().replace(/\s+/g, ' ');
-  }
-
-  // Location aliases (typo‑friendly)
-  const locationMap = {
-    'gulshan': ['gulshan', 'gulson', 'gulshon', 'gulshn', 'gulsan', 'gulshaan'],
-    'banani': ['banani', 'banany', 'bananai', 'bananii'],
-    'baridhara': ['baridhara', 'baridara', 'baridhora', 'baridhar', 'baridharra'],
-    'uttara': ['uttara', 'utara', 'uttora', 'utarra', 'uttarra'],
-    'dhanmondi': ['dhanmondi', 'dhanmondy', 'dhanmondii'],
-    'bashundhara': ['bashundhara', 'bashundara', 'bashundhora', 'bashundhar']
-  };
-  const locationAlias = {};
-  for (const [canon, aliases] of Object.entries(locationMap)) {
-    for (const a of aliases) locationAlias[a] = canon;
-  }
-
-  // Property type aliases
-  const typeMap = {
-    'apartment': ['apartment', 'apartments', 'flat', 'flats', 'apt', 'appartment', 'aprt'],
-    'villa': ['villa', 'villas', 'vila', 'villla'],
-    'penthouse': ['penthouse', 'penthous', 'pent house'],
-    'commercial': ['commercial', 'office', 'shop', 'store', 'comercial']
-  };
-  const typeAlias = {};
-  for (const [canon, aliases] of Object.entries(typeMap)) {
-    for (const a of aliases) typeAlias[a] = canon;
-  }
-
-  // Parse user query into filter parameters
-  function parseQueryToFilters(input, propertiesList) {
-    const text = normalize(input);
-    let filters = {
-      location: null,
-      bedrooms: null,
-      priceMin: null,
-      priceMax: null,
-      type: null
-    };
-    let explanation = '';
-
-    // 1. Location
-    for (const word of text.split(' ')) {
-      if (locationAlias[word]) { filters.location = locationAlias[word]; break; }
-    }
-    if (!filters.location) {
-      for (const [canon, aliases] of Object.entries(locationMap)) {
-        for (const a of aliases) {
-          if (text.includes(a)) { filters.location = canon; break; }
-        }
-        if (filters.location) break;
-      }
-    }
-    if (filters.location) explanation += `📍 ${filters.location.charAt(0).toUpperCase() + filters.location.slice(1)}. `;
-
-    // 2. Bedrooms
-    const bedMatch = text.match(/(\d+)\s*(?:bed|bhk|bedroom|bedrooms)/);
-    if (bedMatch) filters.bedrooms = parseInt(bedMatch[1]);
-    if (filters.bedrooms) explanation += `🛏️ ${filters.bedrooms}+ bedroom(s). `;
-
-    // 3. Price
-    let under = text.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (under) { filters.priceMax = parseFloat(under[1]) * 1e7; explanation += `💰 Under ${under[1]} crore. `; }
-    let above = text.match(/(?:above|over|more than)\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (above) { filters.priceMin = parseFloat(above[1]) * 1e7; explanation += `💰 Above ${above[1]} crore. `; }
-    let between = text.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (between) {
-      filters.priceMin = parseFloat(between[1]) * 1e7;
-      filters.priceMax = parseFloat(between[2]) * 1e7;
-      explanation += `💰 Between ${between[1]} and ${between[2]} crore. `;
-    }
-    let less = text.match(/(?:less than|below|lower than)\s*(\d+(?:\.\d+)?)\s*crore/);
-    if (less) { filters.priceMax = parseFloat(less[1]) * 1e7; explanation += `💰 Below ${less[1]} crore. `; }
-
-    // 4. Property type
-    for (const word of text.split(' ')) {
-      if (typeAlias[word]) { filters.type = typeAlias[word]; break; }
-    }
-    if (!filters.type) {
-      for (const [canon, aliases] of Object.entries(typeMap)) {
-        for (const a of aliases) {
-          if (text.includes(a)) { filters.type = canon; break; }
-        }
-        if (filters.type) break;
-      }
-    }
-    if (filters.type) explanation += `🏢 ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}. `;
-
-    return { filters, explanation };
-  }
-
-  // Apply filters to the properties list
-  function applyFilters(propertiesList, filters) {
-    let filtered = [...propertiesList];
-    if (filters.location) filtered = filtered.filter(p => p.location === filters.location);
-    if (filters.bedrooms) {
-      if (filters.bedrooms >= 5) filtered = filtered.filter(p => p.bedrooms >= 5);
-      else filtered = filtered.filter(p => p.bedrooms === filters.bedrooms);
-    }
-    if (filters.priceMin !== null || filters.priceMax !== null) {
-      filtered = filtered.filter(p => {
-        if (filters.priceMin !== null && p.price < filters.priceMin) return false;
-        if (filters.priceMax !== null && p.price > filters.priceMax) return false;
-        return true;
-      });
-    }
-    if (filters.type) filtered = filtered.filter(p => p.type === filters.type);
-    return filtered;
-  }
-
-  // Save filters to sessionStorage so properties.html can read them
-  function saveFiltersToStorage(filters) {
-    const filtersToStore = {
-      location: filters.location || '',
-      bedrooms: filters.bedrooms ? filters.bedrooms.toString() : '',
-      priceMin: filters.priceMin !== null ? filters.priceMin.toString() : '',
-      priceMax: filters.priceMax !== null ? filters.priceMax.toString() : '',
-      type: filters.type || ''
-    };
-    sessionStorage.setItem('samPropertyFilters', JSON.stringify(filtersToStore));
-  }
-
-  // Main AI initialization
-  function initAI(propertiesList) {
-    const btn = document.getElementById('aiChatBtn');
-    const widget = document.getElementById('aiChatWidget');
-    const closeBtn = document.getElementById('aiCloseChat');
-    const sendBtn = document.getElementById('aiSendBtn');
-    const input = document.getElementById('aiUserInput');
-    const messagesContainer = document.getElementById('aiChatMessages');
-
-    if (!btn || !widget || !closeBtn || !sendBtn || !input || !messagesContainer) {
-      console.warn('AI chat: Missing DOM elements');
-      return;
-    }
-
-    btn.addEventListener('click', () => widget.classList.toggle('open'));
-    closeBtn.addEventListener('click', () => widget.classList.remove('open'));
-
-    function addMessage(text, isUser = false) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`;
-      msgDiv.innerHTML = text;
-      messagesContainer.appendChild(msgDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function addPropertySuggestion(property, filtersUsed) {
-      const container = document.createElement('div');
-      container.style.marginBottom = '15px';
-      container.style.padding = '12px';
-      container.style.backgroundColor = '#1e1e1e';
-      container.style.borderRadius = '12px';
-      container.style.border = '1px solid rgba(212,175,55,0.3)';
-      
-      const details = document.createElement('div');
-      details.innerHTML = `🏠 <strong>${property.name}</strong><br>📍 ${property.locationDisplay} | ${property.priceText} | ${property.bedrooms} Beds | ${property.area}`;
-      details.style.marginBottom = '10px';
-      details.style.color = '#ddd';
-      details.style.fontSize = '14px';
-      
-      const button = document.createElement('button');
-      button.textContent = '🔍 View similar properties →';
-      button.style.background = '#D4AF37';
-      button.style.border = 'none';
-      button.style.padding = '8px 16px';
-      button.style.borderRadius = '20px';
-      button.style.cursor = 'pointer';
-      button.style.color = '#0a0a0a';
-      button.style.fontWeight = 'bold';
-      button.style.fontSize = '12px';
-      button.style.transition = '0.2s';
-      
-      button.addEventListener('mouseenter', () => {
-        button.style.background = '#c4a02e';
-        button.style.transform = 'scale(1.02)';
-      });
-      button.addEventListener('mouseleave', () => {
-        button.style.background = '#D4AF37';
-        button.style.transform = 'scale(1)';
-      });
-      
-      button.addEventListener('click', () => {
-        saveFiltersToStorage(filtersUsed);
-        window.location.href = 'properties.html';
-      });
-      
-      container.appendChild(details);
-      container.appendChild(button);
-      messagesContainer.appendChild(container);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function processQuery(query) {
-      if (!query.trim()) return;
-      addMessage(query, true);
-      input.value = '';
-
-      // Greeting
-      if (/^(hi|hello|hey|greetings|hola|sup)/i.test(query)) {
-        addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
-        return;
-      }
-
-      // Help
-      if (/help/i.test(query)) {
-        addMessage("I can help you find properties. Try asking:<br>• '3BHK villa in Gulshan under 10 crore'<br>• 'Apartments in Banani between 2 and 4 crore'<br>• '2 bedroom flat in Uttara above 1.5 crore'");
-        return;
-      }
-
-      const { filters, explanation } = parseQueryToFilters(query, propertiesList);
-      const matchedProperties = applyFilters(propertiesList, filters);
-
-      if (matchedProperties.length === 0) {
-        addMessage("😔 No properties match your criteria. Try different keywords or contact our team for help.");
-      } else {
-        let reply = `✅ Found ${matchedProperties.length} property(ies). ${explanation}<br><br>`;
-        addMessage(reply);
-        
-        // Show up to 3 property cards with buttons
-        const showCount = Math.min(matchedProperties.length, 3);
-        for (let i = 0; i < showCount; i++) {
-          addPropertySuggestion(matchedProperties[i], filters);
-        }
-        if (matchedProperties.length > 3) {
-          addMessage(`✨ And ${matchedProperties.length - 3} more. Use the buttons above to see similar properties or refine your search.`);
-        } else {
-          addMessage(`📞 Contact us to schedule a viewing or get more details.`);
-        }
-      }
-    }
-
-    sendBtn.addEventListener('click', () => processQuery(input.value));
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') processQuery(input.value);
-    });
-  }
-
-  // Wait for properties array to exist (polling)
-  let attempts = 0;
-  const interval = setInterval(() => {
-    if (typeof properties !== 'undefined' && properties.length > 0) {
-      clearInterval(interval);
-      initAI(properties);
-    } else if (attempts > 100) { // ~10 seconds
-      clearInterval(interval);
-      console.warn('AI chat: properties array not found');
-    }
-    attempts++;
-  }, 100);
-})();
-
-
-// ========== AI PROPERTY ASSISTANT (Full Page Section) ==========
+// ========== AI PROPERTY ASSISTANT (FULL PAGE SECTION - FIXED) ==========
 (function() {
   // Helper: Normalize text
   function normalize(str) {
@@ -847,7 +590,7 @@ function showFormFeedback(msg, type) {
   }
 
   // Parse user query into filter parameters
-  function parseQueryToFilters(input, propertiesList) {
+  function parseQueryToFilters(input) {
     const text = normalize(input);
     let filters = {
       location: null,
@@ -927,7 +670,7 @@ function showFormFeedback(msg, type) {
     return filtered;
   }
 
-  // Save filters to sessionStorage so properties.html can read them
+  // Save filters to sessionStorage
   function saveFiltersToStorage(filters) {
     const filtersToStore = {
       location: filters.location || '',
@@ -946,7 +689,7 @@ function showFormFeedback(msg, type) {
     const messagesContainer = document.getElementById('aiChatMessages');
 
     if (!sendBtn || !input || !messagesContainer) {
-      console.warn('AI: Missing DOM elements');
+      console.warn('AI: Missing DOM elements. Make sure the section HTML is added.');
       return;
     }
 
@@ -1003,7 +746,7 @@ function showFormFeedback(msg, type) {
         return;
       }
 
-      const { filters, explanation } = parseQueryToFilters(query, propertiesList);
+      const { filters, explanation } = parseQueryToFilters(query);
       const matchedProperties = applyFilters(propertiesList, filters);
 
       if (matchedProperties.length === 0) {
@@ -1012,7 +755,6 @@ function showFormFeedback(msg, type) {
         let reply = `✅ Found ${matchedProperties.length} property(ies). ${explanation}`;
         addMessage(reply);
         
-        // Show up to 3 property cards with buttons
         const showCount = Math.min(matchedProperties.length, 3);
         for (let i = 0; i < showCount; i++) {
           addPropertySuggestion(matchedProperties[i], filters);
@@ -1031,17 +773,21 @@ function showFormFeedback(msg, type) {
     });
   }
 
-  // Wait for properties array to exist (polling)
-  let attempts = 0;
-  const interval = setInterval(() => {
-    if (typeof properties !== 'undefined' && properties.length > 0) {
-      clearInterval(interval);
-      initAI(properties);
-    } else if (attempts > 100) {
-      clearInterval(interval);
-      console.warn('AI: properties array not found');
-    }
-    attempts++;
-  }, 100);
+  // ===== Check if properties are already defined =====
+  if (typeof properties !== 'undefined' && properties.length > 0) {
+    initAI(properties);
+  } else {
+    // Wait for properties array to exist
+    let attempts = 0;
+    const interval = setInterval(() => {
+      if (typeof properties !== 'undefined' && properties.length > 0) {
+        clearInterval(interval);
+        initAI(properties);
+      } else if (attempts > 100) {
+        clearInterval(interval);
+        console.warn('AI: properties array not found after 10 seconds');
+      }
+      attempts++;
+    }, 100);
+  }
 })();
-
