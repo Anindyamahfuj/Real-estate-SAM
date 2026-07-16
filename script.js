@@ -1099,70 +1099,116 @@ console.log('🚀 25X Better features loaded successfully!');
 // ============================================
 
 // ============================================
-// LEAD CAPTURE POPUP (FIXED – Button Triggered)
+// LEAD POPUP - WORKING VERSION
 // ============================================
 
-const leadPopup = document.getElementById('leadPopup');
-const leadTrigger = document.getElementById('leadTrigger');
-const leadClose = document.getElementById('leadClose');
+// Wait for DOM to load
+document.addEventListener('DOMContentLoaded', function() {
 
-// Show popup ONLY when button is clicked
-if (leadTrigger && leadPopup) {
-    leadTrigger.addEventListener('click', function() {
-        // Check if user already submitted
-        if (localStorage.getItem('leadCaptured') === 'true') {
-            showToast('✅ You are already subscribed!', 'success');
-            return;
-        }
-        leadPopup.classList.add('show');
-    });
-}
+    // Get all elements
+    const leadTriggers = document.querySelectorAll('#leadTrigger');
+    const leadPopup = document.getElementById('leadPopup');
+    const leadClose = document.getElementById('leadClose');
+    const leadForm = document.getElementById('leadForm');
 
-// Close popup when X is clicked
-if (leadClose) {
-    leadClose.addEventListener('click', function() {
-        leadPopup.classList.remove('show');
-    });
-}
+    // If no popup exists, exit
+    if (!leadPopup) {
+        console.warn('Lead popup not found');
+        return;
+    }
 
-// Close popup when clicking outside
-if (leadPopup) {
+    // ----- OPEN POPUP WHEN ANY TRIGGER BUTTON IS CLICKED -----
+    if (leadTriggers.length > 0) {
+        leadTriggers.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Check if already subscribed
+                if (localStorage.getItem('leadCaptured') === 'true') {
+                    showToast('✅ You are already subscribed!', 'success');
+                    return;
+                }
+                
+                // Show popup
+                leadPopup.classList.add('show');
+                console.log('Popup opened'); // Debug
+            });
+        });
+    } else {
+        console.warn('No lead trigger buttons found');
+    }
+
+    // ----- CLOSE POPUP WHEN X IS CLICKED -----
+    if (leadClose) {
+        leadClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            leadPopup.classList.remove('show');
+            console.log('Popup closed via X');
+        });
+    }
+
+    // ----- CLOSE POPUP WHEN CLICKING OUTSIDE -----
     leadPopup.addEventListener('click', function(e) {
         if (e.target === this) {
             this.classList.remove('show');
+            console.log('Popup closed via outside click');
         }
     });
-}
 
-// Handle form submission
-const leadForm = document.getElementById('leadForm');
-if (leadForm) {
-    leadForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('leadName').value.trim();
-        const email = document.getElementById('leadEmail').value.trim();
-        
-        if (!name || !email) {
-            showToast('⚠️ Please fill in all fields.', 'error');
-            return;
-        }
-        if (!email.includes('@') || !email.includes('.')) {
-            showToast('⚠️ Please enter a valid email.', 'error');
-            return;
-        }
-        
-        // Save to localStorage
-        localStorage.setItem('leadCaptured', 'true');
-        localStorage.setItem('leadName', name);
-        localStorage.setItem('leadEmail', email);
-        
-        // Show success
-        this.innerHTML = '<p style="color:#D4AF37;font-size:1.2rem;">✅ Thank you! We\'ll keep you updated with early property alerts.</p>';
-        leadPopup.classList.remove('show');
-        showToast('🎉 Welcome! You\'ll get early property alerts.', 'success');
-    });
-}
+    // ----- HANDLE FORM SUBMISSION -----
+    if (leadForm) {
+        leadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('leadName')?.value.trim();
+            const email = document.getElementById('leadEmail')?.value.trim();
+            
+            if (!name) {
+                showToast('⚠️ Please enter your full name.', 'error');
+                return;
+            }
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                showToast('⚠️ Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('leadCaptured', 'true');
+            localStorage.setItem('leadName', name);
+            localStorage.setItem('leadEmail', email);
+            
+            // Show success
+            this.innerHTML = '<p style="color:#D4AF37;font-size:1.2rem;">✅ Thank you! We\'ll keep you updated.</p>';
+            
+            // Close popup after 1.5 seconds
+            setTimeout(function() {
+                leadPopup.classList.remove('show');
+                showToast('🎉 Welcome! You\'ll get early property alerts.', 'success');
+            }, 1500);
+        });
+    }
 
+    // ----- TOAST FUNCTION (if not already defined) -----
+    if (typeof showToast === 'undefined') {
+        window.showToast = function(message, type) {
+            const container = document.getElementById('toastContainer');
+            if (container) {
+                const toast = document.createElement('div');
+                toast.className = 'toast ' + (type || 'info');
+                toast.textContent = message;
+                container.appendChild(toast);
+                setTimeout(function() {
+                    if (toast.parentNode) toast.remove();
+                }, 4000);
+            } else {
+                alert(message);
+            }
+        };
+    }
+
+    console.log('Lead popup initialized with ' + leadTriggers.length + ' trigger buttons');
+});
 // 2. WHATSAPP FLOATING BUTTON (Already in HTML)
 
 // 3. MORTGAGE CALCULATOR
