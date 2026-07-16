@@ -430,8 +430,212 @@ function renderFeaturedProperties() {
     });
   }
 
-  renderFeaturedProperties();
-  renderPropertiesGrid();
+ renderFeaturedProperties();
+renderPropertiesGrid();
+
+// ========== AI PROPERTY ASSISTANT (MOVED INSIDE DOMContentLoaded) ==========
+(function() {
+  function normalize(str) {
+    return str.toLowerCase().replace(/[^\w\s]/g, '').trim().replace(/\s+/g, ' ');
+  }
+
+  const locationMap = {
+    'gulshan': ['gulshan', 'gulson', 'gulshon', 'gulshn', 'gulsan', 'gulshaan'],
+    'banani': ['banani', 'banany', 'bananai', 'bananii'],
+    'baridhara': ['baridhara', 'baridara', 'baridhora', 'baridhar', 'baridharra'],
+    'uttara': ['uttara', 'utara', 'uttora', 'utarra', 'uttarra'],
+    'dhanmondi': ['dhanmondi', 'dhanmondy', 'dhanmondii'],
+    'bashundhara': ['bashundhara', 'bashundara', 'bashundhora', 'bashundhar']
+  };
+  const locationAlias = {};
+  for (const [canon, aliases] of Object.entries(locationMap)) {
+    for (const a of aliases) locationAlias[a] = canon;
+  }
+
+  const typeMap = {
+    'apartment': ['apartment', 'apartments', 'flat', 'flats', 'apt', 'appartment', 'aprt'],
+    'villa': ['villa', 'villas', 'vila', 'villla'],
+    'penthouse': ['penthouse', 'penthous', 'pent house'],
+    'commercial': ['commercial', 'office', 'shop', 'store', 'comercial']
+  };
+  const typeAlias = {};
+  for (const [canon, aliases] of Object.entries(typeMap)) {
+    for (const a of aliases) typeAlias[a] = canon;
+  }
+
+  function parseQueryToFilters(input) {
+    const text = normalize(input);
+    let filters = { location: null, bedrooms: null, priceMin: null, priceMax: null, type: null };
+    let explanation = '';
+
+    for (const word of text.split(' ')) {
+      if (locationAlias[word]) { filters.location = locationAlias[word]; break; }
+    }
+    if (!filters.location) {
+      for (const [canon, aliases] of Object.entries(locationMap)) {
+        for (const a of aliases) {
+          if (text.includes(a)) { filters.location = canon; break; }
+        }
+        if (filters.location) break;
+      }
+    }
+    if (filters.location) explanation += `📍 ${filters.location.charAt(0).toUpperCase() + filters.location.slice(1)}. `;
+
+    const bedMatch = text.match(/(\d+)\s*(?:bed|bhk|bedroom|bedrooms)/);
+    if (bedMatch) filters.bedrooms = parseInt(bedMatch[1]);
+    if (filters.bedrooms) explanation += `🛏️ ${filters.bedrooms}+ bedroom(s). `;
+
+    let under = text.match(/under\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (under) { filters.priceMax = parseFloat(under[1]) * 1e7; explanation += `💰 Under ${under[1]} crore. `; }
+    let above = text.match(/(?:above|over|more than)\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (above) { filters.priceMin = parseFloat(above[1]) * 1e7; explanation += `💰 Above ${above[1]} crore. `; }
+    let between = text.match(/between\s*(\d+(?:\.\d+)?)\s*and\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (between) {
+      filters.priceMin = parseFloat(between[1]) * 1e7;
+      filters.priceMax = parseFloat(between[2]) * 1e7;
+      explanation += `💰 Between ${between[1]} and ${between[2]} crore. `;
+    }
+    let less = text.match(/(?:less than|below|lower than)\s*(\d+(?:\.\d+)?)\s*crore/);
+    if (less) { filters.priceMax = parseFloat(less[1]) * 1e7; explanation += `💰 Below ${less[1]} crore. `; }
+
+    for (const word of text.split(' ')) {
+      if (typeAlias[word]) { filters.type = typeAlias[word]; break; }
+    }
+    if (!filters.type) {
+      for (const [canon, aliases] of Object.entries(typeMap)) {
+        for (const a of aliases) {
+          if (text.includes(a)) { filters.type = canon; break; }
+        }
+        if (filters.type) break;
+      }
+    }
+    if (filters.type) explanation += `🏢 ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}. `;
+
+    return { filters, explanation };
+  }
+
+  function applyFilters(propertiesList, filters) {
+    let filtered = [...propertiesList];
+    if (filters.location) filtered = filtered.filter(p => p.location === filters.location);
+    if (filters.bedrooms) {
+      if (filters.bedrooms >= 5) filtered = filtered.filter(p => p.bedrooms >= 5);
+      else filtered = filtered.filter(p => p.bedrooms === filters.bedrooms);
+    }
+    if (filters.priceMin !== null || filters.priceMax !== null) {
+      filtered = filtered.filter(p => {
+        if (filters.priceMin !== null && p.price < filters.priceMin) return false;
+        if (filters.priceMax !== null && p.price > filters.priceMax) return false;
+        return true;
+      });
+    }
+    if (filters.type) filtered = filtered.filter(p => p.type === filters.type);
+    return filtered;
+  }
+
+  function saveFiltersToStorage(filters) {
+    const filtersToStore = {
+      location: filters.location || '',
+      bedrooms: filters.bedrooms ? filters.bedrooms.toString() : '',
+      priceMin: filters.priceMin !== null ? filters.priceMin.toString() : '',
+      priceMax: filters.priceMax !== null ? filters.priceMax.toString() : '',
+      type: filters.type || ''
+    };
+    sessionStorage.setItem('samPropertyFilters', JSON.stringify(filtersToStore));
+  }
+
+  function initAI(propertiesList) {
+    const sendBtn = document.getElementById('aiSendBtn');
+    const input = document.getElementById('aiUserInput');
+    const messagesContainer = document.getElementById('aiChatMessages');
+
+    if (!sendBtn || !input || !messagesContainer) {
+      console.warn('AI: Missing DOM elements. Make sure the section HTML is added.');
+      return;
+    }
+
+    function addMessage(text, isUser = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`;
+      msgDiv.innerHTML = text;
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function addPropertySuggestion(property, filtersUsed) {
+      const container = document.createElement('div');
+      container.className = 'ai-property-suggestion';
+      
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'prop-name';
+      nameDiv.innerHTML = `🏠 ${property.name}`;
+      
+      const detailsDiv = document.createElement('div');
+      detailsDiv.className = 'prop-details';
+      detailsDiv.innerHTML = `📍 ${property.locationDisplay} | ${property.priceText} | ${property.bedrooms} Beds | ${property.area}`;
+      
+      const button = document.createElement('button');
+      button.className = 'view-btn';
+      button.textContent = '🔍 View similar properties →';
+      
+      button.addEventListener('click', () => {
+        saveFiltersToStorage(filtersUsed);
+        window.location.href = 'properties.html';
+      });
+      
+      container.appendChild(nameDiv);
+      container.appendChild(detailsDiv);
+      container.appendChild(button);
+      messagesContainer.appendChild(container);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function processQuery(query) {
+      if (!query.trim()) return;
+      addMessage(query, true);
+      input.value = '';
+
+      if (/^(hi|hello|hey|greetings|hola|sup)/i.test(query)) {
+        addMessage("Hello! I'm SAM AI. Tell me what you're looking for. Example: '3BHK apartment in Gulshan under 5 crore'");
+        return;
+      }
+
+      if (/help/i.test(query)) {
+        addMessage("I can help you find properties. Try asking:<br>• '3BHK villa in Gulshan under 10 crore'<br>• 'Apartments in Banani between 2 and 4 crore'<br>• '2 bedroom flat in Uttara above 1.5 crore'");
+        return;
+      }
+
+      const { filters, explanation } = parseQueryToFilters(query);
+      const matchedProperties = applyFilters(propertiesList, filters);
+
+      if (matchedProperties.length === 0) {
+        addMessage("😔 No properties match your criteria. Try different keywords or contact our team for help.");
+      } else {
+        let reply = `✅ Found ${matchedProperties.length} property(ies). ${explanation}`;
+        addMessage(reply);
+        
+        const showCount = Math.min(matchedProperties.length, 3);
+        for (let i = 0; i < showCount; i++) {
+          addPropertySuggestion(matchedProperties[i], filters);
+        }
+        if (matchedProperties.length > 3) {
+          addMessage(`✨ And ${matchedProperties.length - 3} more. Use the buttons above to see similar properties.`);
+        } else {
+          addMessage(`📞 Contact us to schedule a viewing or get more details.`);
+        }
+      }
+    }
+
+    sendBtn.addEventListener('click', () => processQuery(input.value));
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') processQuery(input.value);
+    });
+  }
+
+  // Start AI immediately (properties is already defined inside this scope)
+  initAI(properties);
+})();
+
+});
 });
 
 window.addEventListener('scroll', () => {
