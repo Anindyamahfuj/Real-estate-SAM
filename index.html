@@ -10,6 +10,48 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
+<!-- Page Loader -->
+<div id="pageLoader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">SAM Properties</div>
+</div>
+
+<!-- Scroll Progress -->
+<div id="scrollProgress"></div>
+
+<!-- Back to Top Button -->
+<button id="backToTop" title="Back to Top"><i class="fas fa-arrow-up"></i></button>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Compare Bar -->
+<div id="compareBar">
+    <div class="compare-items" id="compareItems"></div>
+    <div class="compare-actions">
+        <button id="compareBtn"><i class="fas fa-balance-scale"></i> Compare</button>
+        <button id="clearCompare"><i class="fas fa-times"></i> Clear</button>
+    </div>
+</div>
+
+<!-- Fullscreen Image View -->
+<div class="fullscreen-view" id="fullscreenView">
+    <span class="close-fs">&times;</span>
+    <img id="fullscreenImg" src="" alt="Property">
+</div>
+
+<!-- Cookie Consent -->
+<div class="cookie-consent" id="cookieConsent">
+    <p>🍪 We use cookies to enhance your experience. By continuing, you agree to our <a href="#" style="color:#D4AF37;">Privacy Policy</a>.</p>
+    <button class="cookie-btn" id="acceptCookies">Accept</button>
+</div>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+
+<!-- Live Chat Indicator -->
+<div class="live-chat-indicator"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
            
