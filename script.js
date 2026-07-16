@@ -556,7 +556,7 @@ function showFormFeedback(msg, type) {
 }
 
 
-// ========== AI PROPERTY ASSISTANT (FULL PAGE SECTION - FIXED) ==========
+// ========== AI PROPERTY ASSISTANT (FULL PAGE SECTION - WORKING) ==========
 (function() {
   // Helper: Normalize text
   function normalize(str) {
@@ -773,19 +773,26 @@ function showFormFeedback(msg, type) {
     });
   }
 
-  // ===== Check if properties are already defined =====
-  if (typeof properties !== 'undefined' && properties.length > 0) {
-    initAI(properties);
-  } else {
-    // Wait for properties array to exist
+  // ===== CORRECTED: Wait for DOM and properties to be ready =====
+  function startAI() {
+    if (typeof properties !== 'undefined' && properties.length > 0) {
+      initAI(properties);
+      return true;
+    }
+    return false;
+  }
+
+  // Try immediately if properties already exist
+  if (!startAI()) {
+    // If not, wait for them
     let attempts = 0;
     const interval = setInterval(() => {
       if (typeof properties !== 'undefined' && properties.length > 0) {
         clearInterval(interval);
         initAI(properties);
-      } else if (attempts > 100) {
+      } else if (attempts > 150) { // 15 seconds
         clearInterval(interval);
-        console.warn('AI: properties array not found after 10 seconds');
+        console.warn('AI: properties array not found after 15 seconds');
       }
       attempts++;
     }, 100);
