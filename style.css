@@ -3167,3 +3167,110 @@ img {
         max-height: 35px !important;
     }
 }
+
+
+
+/* ===== TOAST ===== */
+.toast-container {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast {
+    padding: 14px 24px;
+    border-radius: 12px;
+    color: #0a0a0a;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    animation: slideInRight 0.4s ease;
+    max-width: 350px;
+    background: #D4AF37;
+    border-left: 4px solid #b8942e;
+}
+.toast.success { background: #2e7d32; color: white; border-left-color: #4caf50; }
+.toast.error { background: #c62828; color: white; border-left-color: #ef5350; }
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===== COMPARE BAR ===== */
+#compareBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #1a1a1a;
+    border-top: 2px solid #D4AF37;
+    padding: 15px 30px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 9998;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+#compareBar.show { display: flex; }
+
+/* ===== FULLSCREEN VIEW ===== */
+.fullscreen-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 99999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.fullscreen-view.active { display: flex; }
+.fullscreen-view img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+}
+.fullscreen-view .close-fs {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}
+.fullscreen-view .close-fs:hover { transform: rotate(90deg); }
+
+/* ===== COOKIE CONSENT ===== */
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #1a1a1a;
+    border-top: 2px solid #D4AF37;
+    padding: 16px 30px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99998;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.cookie-consent.show { display: flex; }
+.cookie-consent p { color: #ccc; font-size: 14px; margin: 0; }
+.cookie-consent .cookie-btn {
+    background: #D4AF37;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 30px;
+    color: #0a0a0a;
+    font-weight: 700;
+    cursor: pointer;
+}
