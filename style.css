@@ -3428,3 +3428,63 @@ img {
     font-size: 1.1rem;
     font-weight: 700;
 }
+
+
+/* ===== COMPARE BAR FIX ===== */
+#compareBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #1a1a1a !important;
+    border-top: 2px solid #D4AF37 !important;
+    padding: 15px 30px !important;
+    z-index: 9998 !important;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    color: white !important;
+}
+
+#compareBar .compare-item {
+    background: #2a2a2a !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    border: 1px solid #444 !important;
+    color: white !important;
+    font-size: 13px !important;
+}
+
+#compareBar .compare-item .remove-compare {
+    color: #ff4757 !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 18px !important;
+}
+
+#compareBar .compare-actions button {
+    background: #D4AF37 !important;
+    border: none !important;
+    padding: 8px 20px !important;
+    border-radius: 30px !important;
+    color: #0a0a0a !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: 0.3s !important;
+    margin-left: 10px !important;
+}
+
+#compareBar .compare-actions button.btn-outline {
+    background: transparent !important;
+    border: 1px solid #D4AF37 !important;
+    color: #D4AF37 !important;
+}
+
+#compareBar .compare-actions button:hover {
+    transform: scale(1.02) !important;
+}
