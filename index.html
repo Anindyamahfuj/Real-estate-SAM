@@ -246,6 +246,53 @@
     </div>
   </div>
 </section>
+
+<!-- ===== MORTGAGE CALCULATOR ===== -->
+<section class="mortgage-section" id="mortgageCalculator">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-tag">✦ Financial Planning ✦</span>
+            <h2>Mortgage Calculator</h2>
+            <p>Plan your monthly payments and total cost</p>
+        </div>
+        <div class="mortgage-container">
+            <div class="mortgage-inputs">
+                <div class="mortgage-row">
+                    <label>Property Price (৳)</label>
+                    <input type="number" class="price-input" id="mPrice" value="5000000" min="0">
+                </div>
+                <div class="mortgage-row">
+                    <label>Down Payment (%)</label>
+                    <input type="number" class="down-input" id="mDown" value="20" min="0" max="100">
+                </div>
+                <div class="mortgage-row">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" class="rate-input" id="mRate" value="8" step="0.1" min="0">
+                </div>
+                <div class="mortgage-row">
+                    <label>Loan Term (Years)</label>
+                    <input type="number" class="term-input" id="mTerm" value="20" min="1" max="50">
+                </div>
+                <button id="mortgageCalcBtn" class="btn-primary">Calculate →</button>
+            </div>
+            <div class="calc-result" id="mortgageResults">
+                <div class="result-item">
+                    <span>Monthly Payment</span>
+                    <span class="amount" id="mMonthly">0 ৳</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Payment</span>
+                    <span class="amount" id="mTotal">0 ৳</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Interest</span>
+                    <span class="amount" id="mInterest">0 ৳</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
     
   </footer>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
