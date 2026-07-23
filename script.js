@@ -1588,3 +1588,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+
+  }); // THIS CLOSES THE DOMContentLoaded EVENT
