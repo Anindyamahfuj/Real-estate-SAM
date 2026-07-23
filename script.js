@@ -121,6 +121,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log(`Total properties loaded: ${properties.length}`);
 
+  // ===== READ URL PARAMETERS AND APPLY FILTERS =====
+function applyURLFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('search');
+    const price = urlParams.get('price');
+    const beds = urlParams.get('beds');
+    
+    // Apply to filter inputs
+    if (searchTerm) {
+        const searchInput = document.getElementById('searchProperty');
+        if (searchInput) {
+            searchInput.value = searchTerm;
+            // Trigger the search event
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    }
+    
+    if (price && price !== 'all') {
+        const priceSelect = document.getElementById('propertyPrice');
+        if (priceSelect) {
+            priceSelect.value = price;
+            priceSelect.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    if (beds && beds !== 'all') {
+        const bedSelect = document.getElementById('propertyBedrooms');
+        if (bedSelect) {
+            bedSelect.value = beds;
+            bedSelect.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Clear URL params after applying (so refresh doesn't reapply)
+    if (searchTerm || price || beds) {
+        // Show a toast notification
+        setTimeout(() => {
+            showToast('🔍 Showing results for your search!', 'success');
+        }, 500);
+    }
+}
+
+// Call this after the page loads
+setTimeout(applyURLFilters, 300);
+  
   // ========== HERO SLIDER (unchanged) ==========
   const slides = document.querySelectorAll('.slide');
   const prevBtn = document.querySelector('.slider-prev');
@@ -1488,7 +1533,7 @@ document.addEventListener('DOMContentLoaded', function() {
 console.log('🚀 All features added successfully!');
 
 
-// ===== FEATURE 1: ADVANCED PROPERTY SEARCH =====
+/// ===== FEATURE 1: ADVANCED PROPERTY SEARCH =====
 document.getElementById('searchBtn')?.addEventListener('click', function() {
     const keyword = document.getElementById('searchKeyword').value.toLowerCase().trim();
     const price = document.getElementById('searchPrice').value;
@@ -1508,25 +1553,5 @@ document.getElementById('searchBtn')?.addEventListener('click', function() {
             const bed = parseInt(bedrooms);
             if (p.bedrooms < bed) match = false;
         }
-        return match;
-    });
-    
-    if (results.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">❌ No properties match your criteria</div>';
-    } else {
-        container.innerHTML = results.slice(0, 6).map(p => `
-            <div style="background:#1a1a1a; border-radius:16px; overflow:hidden; border:1px solid rgba(212,175,55,0.15);">
-                <img src="${p.image}" alt="${p.name}" style="width:100%; height:180px; object-fit:cover;">
-                <div style="padding:16px;">
-                    <h4 style="color:#D4AF37;">${p.name}</h4>
-                    <p style="color:#aaa; font-size:13px;">${p.locationDisplay} | ${p.priceText}</p>
-                    <p style="color:#666; font-size:12px;">${p.bedrooms} Beds | ${p.area}</p>
-                    <a href="contact.html?property=${encodeURIComponent(p.name)}&type=${p.type}" class="btn-luxury" style="display:inline-block; margin-top:10px; padding:6px 18px; background:#D4AF37; color:#0a0a0a; border-radius:30px; text-decoration:none; font-weight:600; font-size:12px;">View →</a>
-                </div>
-            </div>
-        `).join('');
-    }
-});
-
 
 
