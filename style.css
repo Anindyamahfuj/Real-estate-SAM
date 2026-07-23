@@ -3488,3 +3488,40 @@ img {
 #compareBar .compare-actions button:hover {
     transform: scale(1.02) !important;
 }
+
+
+/* ===== COMPARE MODAL FIX ===== */
+#compareModal {
+    color: white !important;
+}
+
+#compareModal .compare-table {
+    color: white !important;
+}
+
+#compareModal .compare-table td {
+    color: #e5e5e5 !important;
+    padding: 12px 15px !important;
+    border-bottom: 1px solid #2a2a2a !important;
+    text-align: center !important;
+}
+
+#compareModal .compare-table .label-cell {
+    color: #D4AF37 !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+}
+
+#compareModal .compare-table .property-name {
+    color: #D4AF37 !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+}
+
+#compareModal .compare-table th {
+    background: #D4AF37 !important;
+    color: #0a0a0a !important;
+    padding: 12px 15px !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+}
