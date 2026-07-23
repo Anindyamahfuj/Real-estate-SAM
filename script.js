@@ -1490,17 +1490,19 @@ console.log('🚀 All features added successfully!');
 
 // ===== FEATURE 1: ADVANCED PROPERTY SEARCH =====
 document.getElementById('searchBtn')?.addEventListener('click', function() {
-    const keyword = document.getElementById('searchKeyword').value.toLowerCase();
+    const keyword = document.getElementById('searchKeyword').value.toLowerCase().trim();
     const price = document.getElementById('searchPrice').value;
     const bedrooms = document.getElementById('searchBedrooms').value;
+    const container = document.getElementById('searchResults');
     
     const results = properties.filter(p => {
         let match = true;
         if (keyword && !p.name.toLowerCase().includes(keyword) && !p.locationDisplay.toLowerCase().includes(keyword)) match = false;
         if (price !== 'all') {
+            const priceVal = p.price / 10000000;
             const [min, max] = price.split('-');
-            if (max === '10+') { if (p.price < 100000000) match = false; }
-            else { if (p.price < parseInt(min) * 1000000 || p.price > parseInt(max) * 1000000) match = false; }
+            if (max === '10+') { if (priceVal < 10) match = false; }
+            else { if (priceVal < parseFloat(min) || priceVal > parseFloat(max)) match = false; }
         }
         if (bedrooms !== 'all') {
             const bed = parseInt(bedrooms);
@@ -1509,24 +1511,22 @@ document.getElementById('searchBtn')?.addEventListener('click', function() {
         return match;
     });
     
-    const container = document.getElementById('searchResults');
     if (results.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">No properties match your criteria</div>';
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">❌ No properties match your criteria</div>';
     } else {
         container.innerHTML = results.slice(0, 6).map(p => `
-            <div class="property-card">
-                <img src="${p.image}" alt="${p.name}">
-                <div class="info">
-                    <h4>${p.name}</h4>
-                    <p>${p.locationDisplay} | ${p.priceText}</p>
+            <div style="background:#1a1a1a; border-radius:16px; overflow:hidden; border:1px solid rgba(212,175,55,0.15);">
+                <img src="${p.image}" alt="${p.name}" style="width:100%; height:180px; object-fit:cover;">
+                <div style="padding:16px;">
+                    <h4 style="color:#D4AF37;">${p.name}</h4>
+                    <p style="color:#aaa; font-size:13px;">${p.locationDisplay} | ${p.priceText}</p>
                     <p style="color:#666; font-size:12px;">${p.bedrooms} Beds | ${p.area}</p>
-                    <a href="re-contact.html" class="btn-luxury" style="display:inline-block; margin-top:10px; padding:6px 18px; background:#D4AF37; color:#0a0a0a; border-radius:30px; text-decoration:none; font-weight:600; font-size:12px;">View →</a>
+                    <a href="contact.html?property=${encodeURIComponent(p.name)}&type=${p.type}" class="btn-luxury" style="display:inline-block; margin-top:10px; padding:6px 18px; background:#D4AF37; color:#0a0a0a; border-radius:30px; text-decoration:none; font-weight:600; font-size:12px;">View →</a>
                 </div>
             </div>
         `).join('');
     }
 });
-
 
 
 
