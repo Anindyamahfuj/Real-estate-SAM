@@ -1586,3 +1586,62 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// ============================================
+// GLOBAL TOAST FUNCTION (Works on ALL Pages)
+// ============================================
+
+// Create toast container if it doesn't exist
+function ensureToastContainer() {
+    var container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        container.id = 'toastContainer';
+        container.style.cssText = 'position:fixed; top:90px; right:20px; z-index:99999; display:flex; flex-direction:column; gap:10px;';
+        document.body.appendChild(container);
+    }
+    return container;
+}
+
+// Global toast function
+window.showToast = function(message, type) {
+    type = type || 'info';
+    var container = ensureToastContainer();
+    
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    toast.style.cssText = (
+        'padding:14px 24px; ' +
+        'border-radius:12px; ' +
+        'color:' + (type === 'success' ? '#fff' : type === 'error' ? '#fff' : '#0a0a0a') + '; ' +
+        'font-weight:600; ' +
+        'font-size:14px; ' +
+        'box-shadow:0 4px 20px rgba(0,0,0,0.2); ' +
+        'animation:slideInRight 0.4s ease; ' +
+        'max-width:350px; ' +
+        'background:' + (type === 'success' ? '#2e7d32' : type === 'error' ? '#c62828' : '#D4AF37') + '; ' +
+        'border-left:4px solid ' + (type === 'success' ? '#4caf50' : type === 'error' ? '#ef5350' : '#b8942e') + ';'
+    );
+    container.appendChild(toast);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(function() {
+        if (toast.parentNode) toast.remove();
+    }, 4000);
+};
+
+// Add slide-in animation if not already defined
+if (!document.getElementById('toastAnimation')) {
+    var styleSheet = document.createElement('style');
+    styleSheet.id = 'toastAnimation';
+    styleSheet.textContent = (
+        '@keyframes slideInRight {' +
+        '  from { transform: translateX(100%); opacity: 0; }' +
+        '  to { transform: translateX(0); opacity: 1; }' +
+        '}'
+    );
+    document.head.appendChild(styleSheet);
+}
+
+console.log('✅ Toast function loaded globally!');
