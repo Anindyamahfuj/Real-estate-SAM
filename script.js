@@ -1532,4 +1532,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🚀 All features added successfully!');
 
+// ============================================
+// FEATURE 2: MORTGAGE CALCULATOR
+// ============================================
+
+function initMortgageCalculator() {
+    var calcBtn = document.getElementById('mortgageCalcBtn');
+    if (!calcBtn) return;
+    
+    calcBtn.addEventListener('click', function() {
+        var price = parseFloat(document.getElementById('mPrice').value) || 0;
+        var downPercent = parseFloat(document.getElementById('mDown').value) || 0;
+        var rate = parseFloat(document.getElementById('mRate').value) || 0;
+        var term = parseFloat(document.getElementById('mTerm').value) || 1;
+        
+        var down = price * (downPercent / 100);
+        var loan = price - down;
+        var monthlyRate = (rate / 100) / 12;
+        var months = term * 12;
+        
+        var mMonthly = document.getElementById('mMonthly');
+        var mTotal = document.getElementById('mTotal');
+        var mInterest = document.getElementById('mInterest');
+        
+        if (loan <= 0 || monthlyRate <= 0 || months <= 0) {
+            mMonthly.textContent = '0 ৳';
+            mTotal.textContent = '0 ৳';
+            mInterest.textContent = '0 ৳';
+            return;
+        }
+        
+        var monthly = loan * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        var total = monthly * months;
+        var interest = total - loan;
+        
+        mMonthly.textContent = monthly.toLocaleString('en-BD', { maximumFractionDigits: 0 }) + ' ৳';
+        mTotal.textContent = total.toLocaleString('en-BD', { maximumFractionDigits: 0 }) + ' ৳';
+        mInterest.textContent = interest.toLocaleString('en-BD', { maximumFractionDigits: 0 }) + ' ৳';
+    });
+}
+
+// Auto-calculate on page load with default values
+setTimeout(initMortgageCalculator, 300);
+
+
+
+
 
