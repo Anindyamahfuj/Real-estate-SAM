@@ -3277,40 +3277,89 @@ img {
 
 
 
-/* ===== ADVANCED SEARCH ===== */
-.advanced-search { padding: 60px 0; background: #0a0a0a; border-bottom: 1px solid rgba(212,175,55,0.1); }
-.search-box { max-width: 900px; margin: 0 auto; background: #1a1a1a; padding: 30px; border-radius: 24px; border: 1px solid rgba(212,175,55,0.1); }
-.search-box h2 { color: #D4AF37; text-align: center; margin-bottom: 20px; }
-.search-fields { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
-.search-group { flex: 1; min-width: 180px; position: relative; }
-.search-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
-.search-group input, .search-group select { width: 100%; padding: 12px 16px 12px 40px; background: #0a0a0a; border: 1px solid rgba(212,175,55,0.2); border-radius: 30px; color: white; }
-.search-results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
-.search-results-grid .property-card { background: #111; border-radius: 16px; overflow: hidden; border: 1px solid rgba(212,175,55,0.1); }
-.search-results-grid .property-card img { width: 100%; height: 180px; object-fit: cover; }
-.search-results-grid .property-card .info { padding: 15px; }
-.search-results-grid .property-card .info h4 { color: #D4AF37; }
-.search-results-grid .property-card .info p { color: #aaa; font-size: 13px; }
+/* ===== MORTGAGE CALCULATOR ===== */
+.mortgage-section {
+    padding: 80px 0;
+    background: #0d0d0d;
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
 
-
-/* ===== SEARCH RESULTS STYLING ===== */
-.search-results-grid {
+.mortgage-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 24px;
+    border: 1px solid rgba(212, 175, 55, 0.1);
 }
 
-.search-result-card:hover {
-    border-color: #D4AF37 !important;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+.mortgage-row {
+    margin-bottom: 15px;
 }
 
-/* Fix for no results */
-.search-results-grid .no-results {
-    text-align: center;
-    padding: 40px;
-    color: #888;
-    grid-column: 1 / -1;
+.mortgage-row label {
+    color: #aaa;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.mortgage-row input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #0a0a0a;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 30px;
+    color: white;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.mortgage-row input:focus {
+    outline: none;
+    border-color: #D4AF37;
+}
+
+.calc-result {
+    background: #0a0a0a;
+    padding: 20px;
+    border-radius: 16px;
+    border-left: 4px solid #D4AF37;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #2a2a2a;
+    color: #ccc;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item .amount {
+    color: #D4AF37;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#mortgageCalcBtn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .mortgage-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
 }
