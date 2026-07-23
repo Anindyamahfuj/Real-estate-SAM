@@ -1487,3 +1487,43 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('🚀 All features added successfully!');
+
+
+// ===== FEATURE 1: ADVANCED PROPERTY SEARCH =====
+document.getElementById('searchBtn')?.addEventListener('click', function() {
+    const keyword = document.getElementById('searchKeyword').value.toLowerCase();
+    const price = document.getElementById('searchPrice').value;
+    const bedrooms = document.getElementById('searchBedrooms').value;
+    
+    const results = properties.filter(p => {
+        let match = true;
+        if (keyword && !p.name.toLowerCase().includes(keyword) && !p.locationDisplay.toLowerCase().includes(keyword)) match = false;
+        if (price !== 'all') {
+            const [min, max] = price.split('-');
+            if (max === '10+') { if (p.price < 100000000) match = false; }
+            else { if (p.price < parseInt(min) * 1000000 || p.price > parseInt(max) * 1000000) match = false; }
+        }
+        if (bedrooms !== 'all') {
+            const bed = parseInt(bedrooms);
+            if (p.bedrooms < bed) match = false;
+        }
+        return match;
+    });
+    
+    const container = document.getElementById('searchResults');
+    if (results.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">No properties match your criteria</div>';
+    } else {
+        container.innerHTML = results.slice(0, 6).map(p => `
+            <div class="property-card">
+                <img src="${p.image}" alt="${p.name}">
+                <div class="info">
+                    <h4>${p.name}</h4>
+                    <p>${p.locationDisplay} | ${p.priceText}</p>
+                    <p style="color:#666; font-size:12px;">${p.bedrooms} Beds | ${p.area}</p>
+                    <a href="re-contact.html" class="btn-luxury" style="display:inline-block; margin-top:10px; padding:6px 18px; background:#D4AF37; color:#0a0a0a; border-radius:30px; text-decoration:none; font-weight:600; font-size:12px;">View →</a>
+                </div>
+            </div>
+        `).join('');
+    }
+});
