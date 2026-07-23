@@ -1401,3 +1401,177 @@ function getPropertyStatus(property) {
 
 // 14. ENHANCED PROPERTY CARD RENDERING (to be integrated)
 console.log('50X Better features loaded successfully!');
+
+
+// ============================================
+// ADDED FEATURES – TOAST, COMPARE, FULLSCREEN, COOKIE
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 1. TOAST FUNCTION
+    window.showToast = function(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        if (!container) {
+            alert(message);
+            return;
+        }
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+            if (toast.parentNode) toast.remove();
+        }, 4000);
+    };
+
+    // Test toast on load
+    setTimeout(() => {
+        showToast('🚀 Welcome to SAM Properties!', 'success');
+    }, 1500);
+
+    // 2. COMPARE BAR
+    let compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+
+    function updateCompareBar() {
+        const bar = document.getElementById('compareBar');
+        const items = document.getElementById('compareItems');
+        if (!bar || !items) return;
+        
+        if (compareList.length > 0) {
+            bar.style.display = 'flex';
+            items.innerHTML = compareList.map((name, i) => `
+                <div class="compare-item" style="background:#2a2a2a; padding:8px 16px; border-radius:8px; display:flex; align-items:center; gap:10px; border:1px solid #333; color:white;">
+                    ${name}
+                    <span class="remove-compare" style="color:#ff4757; cursor:pointer; font-weight:bold;" data-index="${i}">&times;</span>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.remove-compare').forEach(el => {
+                el.addEventListener('click', function() {
+                    compareList.splice(parseInt(this.dataset.index), 1);
+                    localStorage.setItem('compareList', JSON.stringify(compareList));
+                    updateCompareBar();
+                    showToast('Removed from compare', 'info');
+                });
+            });
+        } else {
+            bar.style.display = 'none';
+        }
+    }
+
+    document.getElementById('clearCompare')?.addEventListener('click', function() {
+        compareList = [];
+        localStorage.setItem('compareList', JSON.stringify(compareList));
+        updateCompareBar();
+        showToast('🧹 Compare list cleared', 'info');
+    });
+
+    document.getElementById('compareBtn')?.addEventListener('click', function() {
+        if (compareList.length < 2) {
+            showToast('⚠️ Select at least 2 properties to compare', 'error');
+            return;
+        }
+        showToast(`📊 Comparing ${compareList.length} properties`, 'success');
+    });
+
+    function addCompareToCards() {
+        document.querySelectorAll('.property-card').forEach((card) => {
+            const existing = card.querySelector('.compare-checkbox');
+            if (existing) existing.remove();
+            
+            const name = card.querySelector('h3')?.textContent;
+            if (!name) return;
+            
+            const checkbox = document.createElement('div');
+            checkbox.className = 'compare-checkbox';
+            checkbox.style.cssText = 'position:absolute; bottom:15px; left:15px; z-index:5; display:flex; align-items:center; gap:6px; color:#aaa; font-size:12px;';
+            checkbox.innerHTML = `
+                <input type="checkbox" class="compare-select" data-name="${name}" style="accent-color:#D4AF37; width:16px; height:16px; cursor:pointer;">
+                <span>Compare</span>
+            `;
+            card.style.position = 'relative';
+            card.appendChild(checkbox);
+            
+            const chk = checkbox.querySelector('.compare-select');
+            chk.addEventListener('change', function() {
+                if (this.checked) {
+                    if (compareList.length >= 3) {
+                        showToast('⚠️ You can compare up to 3 properties only', 'error');
+                        this.checked = false;
+                        return;
+                    }
+                    if (!compareList.includes(name)) {
+                        compareList.push(name);
+                        localStorage.setItem('compareList', JSON.stringify(compareList));
+                        updateCompareBar();
+                        showToast(`➕ ${name} added to compare`, 'success');
+                    }
+                } else {
+                    const index = compareList.indexOf(name);
+                    if (index > -1) {
+                        compareList.splice(index, 1);
+                        localStorage.setItem('compareList', JSON.stringify(compareList));
+                        updateCompareBar();
+                        showToast(`➖ ${name} removed from compare`, 'info');
+                    }
+                }
+            });
+        });
+    }
+
+    // 3. FULLSCREEN IMAGE VIEW
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.property-img')) {
+            const img = e.target.closest('.property-img');
+            const fullscreen = document.getElementById('fullscreenView');
+            const fullImg = document.getElementById('fullscreenImg');
+            if (fullscreen && fullImg) {
+                fullImg.src = img.src;
+                fullscreen.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    });
+
+    document.querySelector('.close-fs')?.addEventListener('click', function() {
+        const fullscreen = document.getElementById('fullscreenView');
+        if (fullscreen) {
+            fullscreen.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    document.getElementById('fullscreenView')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // 4. COOKIE CONSENT
+    const cookieConsent = document.getElementById('cookieConsent');
+    if (cookieConsent) {
+        if (!localStorage.getItem('cookiesAccepted')) {
+            cookieConsent.style.display = 'flex';
+        }
+        
+        document.getElementById('acceptCookies')?.addEventListener('click', function() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieConsent.style.display = 'none';
+            showToast('🍪 Cookies accepted!', 'success');
+        });
+    }
+
+    // Initialize
+    updateCompareBar();
+    setTimeout(addCompareToCards, 500);
+    
+    const observer = new MutationObserver(() => addCompareToCards());
+    const grid = document.getElementById('propertiesGrid');
+    if (grid) {
+        observer.observe(grid, { childList: true, subtree: true });
+    }
+});
+
+console.log('🚀 All features added successfully!');
