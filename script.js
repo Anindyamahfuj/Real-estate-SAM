@@ -1743,13 +1743,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ===== CLEAR COMPARE =====
-    document.getElementById('clearCompare')?.addEventListener('click', function() {
-        compareList = [];
-        localStorage.setItem('compareList', JSON.stringify(compareList));
-        updateCompareBar();
-        showToast('🧹 Compare list cleared', 'info');
+   // ===== CLEAR COMPARE (Uncheck all checkboxes) =====
+document.getElementById('clearCompare')?.addEventListener('click', function() {
+    compareList = [];
+    localStorage.setItem('compareList', JSON.stringify(compareList));
+    
+    // Uncheck all compare checkboxes
+    document.querySelectorAll('.compare-select').forEach(function(chk) {
+        chk.checked = false;
     });
+    
+    updateCompareBar();
+    showToast('🧹 Compare list cleared', 'info');
+});
 
     // ===== INITIALIZE =====
     updateCompareBar();
