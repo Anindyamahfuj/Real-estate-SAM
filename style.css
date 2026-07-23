@@ -3363,3 +3363,68 @@ img {
         padding: 20px;
     }
 }
+
+/* ===== PROPERTY COMPARISON ===== */
+.compare-item {
+    background: #2a2a2a;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #333;
+    color: white;
+    font-size: 13px;
+}
+.compare-item .remove-compare {
+    color: #ff4757;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+}
+.compare-actions button {
+    margin-left: 10px;
+}
+
+/* Compare Table */
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e5e5e5;
+}
+.compare-table th {
+    background: #D4AF37;
+    color: #0a0a0a;
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: 700;
+}
+.compare-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2a2a2a;
+    text-align: center;
+}
+.compare-table tr:hover td {
+    background: #111;
+}
+.compare-table .label-cell {
+    color: #D4AF37;
+    font-weight: 600;
+    text-align: left;
+}
+.compare-table .featured-cell {
+    background: rgba(212, 175, 55, 0.1);
+}
+.compare-table img {
+    width: 100%;
+    max-width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0 auto;
+}
+.compare-table .property-name {
+    color: #D4AF37;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
