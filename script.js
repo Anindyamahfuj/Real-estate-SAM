@@ -1554,4 +1554,88 @@ document.getElementById('searchBtn')?.addEventListener('click', function() {
             if (p.bedrooms < bed) match = false;
         }
 
+// ============================================
+// SEARCH REDIRECT (index.html → properties.html)
+// ============================================
 
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ---- SEARCH BUTTON (Redirect) ----
+    const searchBtn = document.getElementById('searchBtn');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function() {
+            const keyword = document.getElementById('searchKeyword')?.value.trim() || '';
+            const price = document.getElementById('searchPrice')?.value || 'all';
+            const bedrooms = document.getElementById('searchBedrooms')?.value || 'all';
+            
+            let params = [];
+            if (keyword) params.push('search=' + encodeURIComponent(keyword));
+            if (price !== 'all') params.push('price=' + encodeURIComponent(price));
+            if (bedrooms !== 'all') params.push('beds=' + encodeURIComponent(bedrooms));
+            
+            if (params.length > 0) {
+                window.location.href = 'properties.html?' + params.join('&');
+            } else {
+                window.location.href = 'properties.html';
+            }
+        });
+    }
+    
+    // ---- ENTER KEY SUPPORT ----
+    document.getElementById('searchKeyword')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('searchBtn')?.click();
+        }
+    });
+    
+    // ---- APPLY URL PARAMETERS ON PROPERTIES PAGE ----
+    function applyURLFilters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchTerm = urlParams.get('search');
+        const price = urlParams.get('price');
+        const beds = urlParams.get('beds');
+        
+        if (searchTerm) {
+            const searchInput = document.getElementById('searchProperty');
+            if (searchInput) {
+                searchInput.value = searchTerm;
+                setTimeout(() => {
+                    searchInput.dispatchEvent(new Event('input'));
+                }, 100);
+            }
+        }
+        
+        if (price && price !== 'all') {
+            const priceSelect = document.getElementById('propertyPrice');
+            if (priceSelect) {
+                priceSelect.value = price;
+                setTimeout(() => {
+                    priceSelect.dispatchEvent(new Event('change'));
+                }, 100);
+            }
+        }
+        
+        if (beds && beds !== 'all') {
+            const bedSelect = document.getElementById('propertyBedrooms');
+            if (bedSelect) {
+                bedSelect.value = beds;
+                setTimeout(() => {
+                    bedSelect.dispatchEvent(new Event('change'));
+                }, 100);
+            }
+        }
+        
+        if (searchTerm || price || beds) {
+            setTimeout(() => {
+                if (typeof showToast === 'function') {
+                    showToast('🔍 Showing results for your search!', 'success');
+                }
+            }, 500);
+        }
+    }
+    
+    // Only run on properties page
+    if (window.location.pathname.includes('properties.html')) {
+        setTimeout(applyURLFilters, 400);
+    }
+});
