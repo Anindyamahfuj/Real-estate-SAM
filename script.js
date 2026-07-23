@@ -1554,12 +1554,12 @@ document.getElementById('searchBtn')?.addEventListener('click', function() {
             if (p.bedrooms < bed) match = false;
         }
 // ============================================
-// SEARCH REDIRECT (index.html → properties.html) - FIXED
+// SEARCH REDIRECT (index.html → properties.html) - USING localStorage
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ---- SEARCH BUTTON (Redirect) ----
+    // ---- SEARCH BUTTON (Store in localStorage and redirect) ----
     const searchBtn = document.getElementById('searchBtn');
     if (searchBtn) {
         searchBtn.addEventListener('click', function() {
@@ -1567,16 +1567,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const price = document.getElementById('searchPrice')?.value || 'all';
             const bedrooms = document.getElementById('searchBedrooms')?.value || 'all';
             
-            let params = [];
-            if (keyword) params.push('search=' + encodeURIComponent(keyword));
-            if (price !== 'all') params.push('price=' + encodeURIComponent(price));
-            if (bedrooms !== 'all') params.push('beds=' + encodeURIComponent(bedrooms));
+            // Store search data in localStorage
+            const searchData = {
+                keyword: keyword,
+                price: price,
+                bedrooms: bedrooms,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('samSearchData', JSON.stringify(searchData));
             
-            if (params.length > 0) {
-                window.location.href = 'properties.html?' + params.join('&');
-            } else {
-                window.location.href = 'properties.html';
-            }
+            // Redirect to properties page
+            window.location.href = 'properties.html';
         });
     }
     
@@ -1585,86 +1586,5 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') {
             document.getElementById('searchBtn')?.click();
         }
-    });
-    
-    // ---- APPLY URL PARAMETERS ON PROPERTIES PAGE (FIXED) ----
-    function applyURLFilters() {
-        // Prevent multiple executions
-        if (sessionStorage.getItem('filtersApplied') === 'true') {
-            sessionStorage.removeItem('filtersApplied');
-            return;
-        }
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchTerm = urlParams.get('search');
-        const price = urlParams.get('price');
-        const beds = urlParams.get('beds');
-        
-        // If no parameters, exit
-        if (!searchTerm && !price && !beds) return;
-        
-        // Mark as applied to prevent loops
-        sessionStorage.setItem('filtersApplied', 'true');
-        
-        // Apply search term
-        if (searchTerm) {
-            const searchInput = document.getElementById('searchProperty');
-            if (searchInput) {
-                searchInput.value = searchTerm;
-                // Use a manual event that doesn't trigger infinite loops
-                const event = new Event('input', { bubbles: true });
-                // Only dispatch if the filter function is defined
-                if (typeof filterProperties === 'function') {
-                    searchInput.dispatchEvent(event);
-                }
-            }
-        }
-        
-        // Apply price filter
-        if (price && price !== 'all') {
-            const priceSelect = document.getElementById('propertyPrice');
-            if (priceSelect) {
-                priceSelect.value = price;
-                const event = new Event('change', { bubbles: true });
-                priceSelect.dispatchEvent(event);
-            }
-        }
-        
-        // Apply bedrooms filter
-        if (beds && beds !== 'all') {
-            const bedSelect = document.getElementById('propertyBedrooms');
-            if (bedSelect) {
-                bedSelect.value = beds;
-                const event = new Event('change', { bubbles: true });
-                bedSelect.dispatchEvent(event);
-            }
-        }
-        
-        // Show toast
-        setTimeout(function() {
-            if (typeof showToast === 'function') {
-                showToast('🔍 Showing results for your search!', 'success');
-            }
-        }, 600);
-        
-        // Clear URL params without reloading
-        if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }
-    
-    // Only run on properties page (and only once)
-    if (window.location.pathname.includes('properties.html')) {
-        // Check if we already processed URL params
-        if (!sessionStorage.getItem('filtersProcessed')) {
-            sessionStorage.setItem('filtersProcessed', 'true');
-            setTimeout(applyURLFilters, 500);
-        }
-    }
-    
-    // Clear the session storage flag when leaving the page
-    window.addEventListener('beforeunload', function() {
-        sessionStorage.removeItem('filtersProcessed');
-        sessionStorage.removeItem('filtersApplied');
     });
 });
