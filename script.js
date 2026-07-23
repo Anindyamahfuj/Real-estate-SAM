@@ -1576,6 +1576,14 @@ function initMortgageCalculator() {
 setTimeout(initMortgageCalculator, 300);
 
 
-
+// Auto-calculate on input change
+document.addEventListener('DOMContentLoaded', function() {
+    var inputs = document.querySelectorAll('.mortgage-row input');
+    inputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            document.getElementById('mortgageCalcBtn').click();
+        });
+    });
+});
 
 
