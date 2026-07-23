@@ -1526,3 +1526,111 @@ document.getElementById('searchBtn')?.addEventListener('click', function() {
         `).join('');
     }
 });
+
+
+
+
+// ============================================
+// FIX: ADVANCED PROPERTY SEARCH (WORKING)
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Get the search button and elements
+    const searchBtn = document.getElementById('searchBtn');
+    const searchKeyword = document.getElementById('searchKeyword');
+    const searchPrice = document.getElementById('searchPrice');
+    const searchBedrooms = document.getElementById('searchBedrooms');
+    const searchResults = document.getElementById('searchResults');
+
+    if (!searchBtn) {
+        console.warn('Search button not found');
+        return;
+    }
+
+    // Make properties accessible globally
+    window.allProperties = properties;
+
+    // Search function
+    function performSearch() {
+        const keyword = searchKeyword.value.toLowerCase().trim();
+        const price = searchPrice.value;
+        const bedrooms = searchBedrooms.value;
+
+        // Filter properties
+        let results = properties.filter(p => {
+            let match = true;
+
+            // Keyword filter
+            if (keyword && !p.name.toLowerCase().includes(keyword) && !p.locationDisplay.toLowerCase().includes(keyword)) {
+                match = false;
+            }
+
+            // Price filter
+            if (match && price !== 'all') {
+                const priceValue = p.price / 10000000; // Convert to crore
+                const [min, max] = price.split('-');
+                if (max === '10+') {
+                    if (priceValue < 10) match = false;
+                } else {
+                    if (priceValue < parseFloat(min) || priceValue > parseFloat(max)) match = false;
+                }
+            }
+
+            // Bedrooms filter
+            if (match && bedrooms !== 'all') {
+                const bed = parseInt(bedrooms);
+                if (p.bedrooms < bed) match = false;
+            }
+
+            return match;
+        });
+
+        // Display results
+        if (results.length === 0) {
+            searchResults.innerHTML = `
+                <div style="text-align:center; padding:40px; color:#888; grid-column: 1 / -1;">
+                    <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:15px;"></i>
+                    No properties match your criteria. Try different filters.
+                </div>
+            `;
+        } else {
+            searchResults.innerHTML = results.slice(0, 6).map(p => `
+                <div class="search-result-card" style="
+                    background: #1a1a1a;
+                    border-radius: 16px;
+                    overflow: hidden;
+                    border: 1px solid rgba(212,175,55,0.15);
+                    transition: 0.3s;
+                ">
+                    <img src="${p.image}" alt="${p.name}" style="
+                        width: 100%;
+                        height: 180px;
+                        object-fit: cover;
+                    ">
+                    <div style="padding: 16px;">
+                        <h4 style="color: #D4AF37; margin-bottom: 4px;">${p.name}</h4>
+                        <p style="color: #aaa; font-size: 13px;">${p.locationDisplay} | ${p.priceText}</p>
+                        <p style="color: #666; font-size: 12px; margin-top: 4px;">${p.bedrooms} Beds | ${p.area}</p>
+                        <a href="contact.html?property=${encodeURIComponent(p.name)}&type=${p.type}" 
+                           class="btn-luxury" 
+                           style="display:inline-block; margin-top:10px; padding:6px 18px; background:#D4AF37; color:#0a0a0a; border-radius:30px; text-decoration:none; font-weight:600; font-size:12px;">
+                           View →
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Add event listener to search button
+    searchBtn.addEventListener('click', performSearch);
+
+    // Add Enter key support
+    searchKeyword.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') performSearch();
+    });
+
+    // Show all properties on load (optional)
+    setTimeout(performSearch, 500);
+});
