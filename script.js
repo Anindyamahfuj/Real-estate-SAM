@@ -1693,3 +1693,55 @@ function loadWishlistState() {
 
 // Call after property cards are rendered
 setTimeout(loadWishlistState, 500);
+
+// ============================================
+// WISHLIST PAGE – RENDER SAVED PROPERTIES
+// ============================================
+
+function renderWishlist() {
+    var grid = document.getElementById('wishlistGrid');
+    var emptyMsg = document.getElementById('emptyWishlist');
+    if (!grid) return;
+    
+    var wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    var propertiesData = window.properties || [];
+    
+    if (wishlist.length === 0 || propertiesData.length === 0) {
+        grid.innerHTML = '';
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        return;
+    }
+    
+    if (emptyMsg) emptyMsg.style.display = 'none';
+    
+    var wishlistProperties = propertiesData.filter(function(p) {
+        return wishlist.indexOf(p.name) > -1;
+    });
+    
+    if (wishlistProperties.length === 0) {
+        grid.innerHTML = '';
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        return;
+    }
+    
+    grid.innerHTML = wishlistProperties.map(function(prop) {
+        return '<div class="property-card">' +
+            '<img src="' + prop.image + '" alt="' + prop.name + '" class="property-img">' +
+            '<button class="wishlist-btn liked" onclick="toggleWishlist(\'' + prop.name + '\', this)">' +
+            '  <i class="fas fa-heart"></i>' +
+            '</button>' +
+            '<div class="property-info">' +
+            '  <h3>' + prop.name + '</h3>' +
+            '  <div class="property-location"><i class="fas fa-map-pin"></i> ' + prop.locationDisplay + '</div>' +
+            '  <div class="property-price">৳ ' + prop.priceText + '</div>' +
+            '  <p>' + (prop.bedrooms ? prop.bedrooms + ' Beds | ' : 'Commercial Space | ') + prop.area + '</p>' +
+            '  <a href="contact.html?property=' + encodeURIComponent(prop.name) + '&type=' + prop.type + '" class="btn-luxury" style="margin-top:16px; display:inline-block; padding:6px 18px; background:#D4AF37; color:#0a0a0a; border-radius:30px; text-decoration:none; font-weight:600; font-size:12px;">Inquire →</a>' +
+            '</div>' +
+            '</div>';
+    }).join('');
+}
+
+// Run on wishlist page
+if (window.location.pathname.includes('wishlist.html')) {
+    setTimeout(renderWishlist, 500);
+}
