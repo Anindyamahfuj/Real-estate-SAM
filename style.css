@@ -3525,3 +3525,43 @@ img {
     text-align: center !important;
     font-weight: 700 !important;
 }
+
+
+/* ===== WISHLIST BUTTON ===== */
+.wishlist-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 5;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.wishlist-btn:hover {
+    transform: scale(1.15);
+    background: rgba(0, 0, 0, 0.8);
+}
+.wishlist-btn.liked {
+    color: #ff4757;
+    background: rgba(255, 71, 87, 0.2);
+}
+.wishlist-btn.liked i {
+    animation: heartPop 0.3s ease;
+}
+@keyframes heartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+.property-card {
+    position: relative;
+}
