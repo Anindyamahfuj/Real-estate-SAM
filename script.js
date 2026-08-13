@@ -1648,3 +1648,48 @@ if (!document.getElementById('toastAnimation')) {
 }
 
 console.log('✅ Toast function loaded globally!');
+
+// ============================================
+// FEATURE 4: WISHLIST / FAVORITES
+// ============================================
+
+function toggleWishlist(propertyName, button) {
+    var wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    var index = wishlist.indexOf(propertyName);
+    
+    if (index > -1) {
+        wishlist.splice(index, 1);
+        button.classList.remove('liked');
+        showToast('❌ Removed from wishlist', 'info');
+    } else {
+        wishlist.push(propertyName);
+        button.classList.add('liked');
+        showToast('❤️ Added to wishlist!', 'success');
+    }
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    updateWishlistCount();
+}
+
+// Update wishlist count (optional)
+function updateWishlistCount() {
+    var wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    var countEl = document.getElementById('wishlistCount');
+    if (countEl) {
+        countEl.textContent = wishlist.length;
+    }
+}
+
+// Load wishlist state on page load
+function loadWishlistState() {
+    var wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    document.querySelectorAll('.wishlist-btn').forEach(function(btn) {
+        var name = btn.getAttribute('data-name') || btn.closest('.property-card')?.querySelector('h3')?.textContent;
+        if (name && wishlist.indexOf(name) > -1) {
+            btn.classList.add('liked');
+        }
+    });
+    updateWishlistCount();
+}
+
+// Call after property cards are rendered
+setTimeout(loadWishlistState, 500);
