@@ -259,6 +259,9 @@ function renderFeaturedProperties() {
   if (featuredGrid) {
     featuredGrid.innerHTML = properties.slice(0, 6).map(prop => `
       <div class="property-card">
+      '<button class="wishlist-btn" onclick="toggleWishlist(\'' + prop.name + '\', this)">' +
+'  <i class="fas fa-heart"></i>' +
+'</button>'
         <img src="${prop.image}" alt="${prop.name}" class="property-img">
         <div class="property-info">
           <h3>${prop.name}</h3>
