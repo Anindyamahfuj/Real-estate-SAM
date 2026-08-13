@@ -3565,3 +3565,17 @@ img {
 .property-card {
     position: relative;
 }
+
+
+
+/* ===== WISHLIST PAGE ===== */
+.wishlist-section {
+    padding: 60px 0;
+    background: #0a0a0a;
+    min-height: 400px;
+}
+.wishlist-section .property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
